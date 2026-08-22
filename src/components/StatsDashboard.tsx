@@ -2,6 +2,7 @@ import React from 'react';
 import type { Player, SpinResult } from '../types';
 import { RED_NUMBERS } from '../utils/constants';
 import { Flame, Trophy, Zap, PieChart } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface StatsDashboardProps {
   players: Player[];
@@ -9,6 +10,7 @@ interface StatsDashboardProps {
 }
 
 export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history }) => {
+  const { t } = useLanguage();
   const totalSessionPushups = history.reduce((acc, s) => acc + s.pushupsDone, 0);
   const totalSpins = history.length;
 
@@ -39,69 +41,66 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history
   });
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       {/* Top 3 Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30">
-            <Flame className="w-6 h-6" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-lg flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 shrink-0">
+            <Flame className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-semibold uppercase">Total Session Reps</span>
-            <h3 className="text-3xl font-black text-white">{totalSessionPushups}</h3>
-            <span className="text-[10px] text-amber-400">Across {totalSpins} spins</span>
+            <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">{t('totalPushupsOverall')}</span>
+            <h3 className="text-2xl font-black text-white">{totalSessionPushups}</h3>
           </div>
         </div>
 
-        <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center border border-yellow-500/30">
-            <Trophy className="w-6 h-6" />
+        <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-lg flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-yellow-500/15 text-yellow-400 flex items-center justify-center border border-yellow-500/30 shrink-0">
+            <Trophy className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-semibold uppercase">Current Leader</span>
-            <h3 className="text-xl font-extrabold text-white flex items-center gap-1.5">
+            <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">{t('leaderboard')}</span>
+            <h3 className="text-base font-extrabold text-white flex items-center gap-1.5 truncate">
               <span>{mvp?.avatar}</span> {mvp?.name || 'N/A'}
             </h3>
-            <span className="text-[10px] text-yellow-400">{mvp?.totalPushups || 0} pushups completed</span>
           </div>
         </div>
 
-        <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-            <Zap className="w-6 h-6" />
+        <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-lg flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/30 shrink-0">
+            <Zap className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs text-slate-400 font-semibold uppercase">Avg Reps / Spin</span>
-            <h3 className="text-3xl font-black text-white">
+            <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">{t('avgPushupsPerSpin')}</span>
+            <h3 className="text-2xl font-black text-white">
               {totalSpins > 0 ? (totalSessionPushups / totalSpins).toFixed(1) : 0}
             </h3>
-            <span className="text-[10px] text-emerald-400">Pace per turn</span>
           </div>
         </div>
       </div>
 
       {/* Hot & Cold Numbers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Hot & Cold Numbers */}
-        <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 flex flex-col gap-3">
-          <h4 className="font-bold text-white flex items-center gap-2">
+        <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 flex flex-col gap-3">
+          <h4 className="font-extrabold text-white text-sm flex items-center gap-2">
             <Flame className="w-4 h-4 text-red-500" /> Hot & Cold Pockets
           </h4>
           <div className="flex flex-col gap-2">
             <div>
-              <span className="text-[11px] text-amber-400 font-bold uppercase tracking-wider block mb-1">🔥 Hot Landed:</span>
+              <span className="text-[11px] text-amber-400 font-extrabold uppercase tracking-wider block mb-1">🔥 Hot Landed:</span>
               <div className="flex flex-wrap gap-2">
                 {hotNumbers.length > 0 ? (
                   hotNumbers.map(n => (
-                    <div key={n.num} className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700">
+                    <div key={n.num} className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-950 border border-slate-800">
                       <span
-                        className={`w-5 h-5 rounded-full font-bold text-[11px] flex items-center justify-center ${
-                          n.num === 0 ? 'bg-emerald-600 text-white' : RED_NUMBERS.has(n.num) ? 'bg-red-600 text-white' : 'bg-slate-950 text-amber-300'
+                        className={`w-5 h-5 rounded-full font-black text-[11px] flex items-center justify-center ${
+                          n.num === 0 ? 'bg-emerald-600 text-white' : RED_NUMBERS.has(n.num) ? 'bg-red-600 text-white' : 'bg-slate-900 text-amber-300'
                         }`}
                       >
                         {n.num}
                       </span>
-                      <span className="text-xs text-slate-300 font-semibold">{n.count}x</span>
+                      <span className="text-xs text-slate-300 font-bold">{n.count}x</span>
                     </div>
                   ))
                 ) : (
@@ -111,13 +110,13 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history
             </div>
 
             <div className="pt-2 border-t border-slate-800">
-              <span className="text-[11px] text-blue-400 font-bold uppercase tracking-wider block mb-1">❄️ Unlanded Cold:</span>
+              <span className="text-[11px] text-blue-400 font-extrabold uppercase tracking-wider block mb-1">❄️ Unlanded Cold:</span>
               <div className="flex flex-wrap gap-1.5">
                 {coldNumbers.map(n => (
                   <span
                     key={n.num}
                     className={`w-6 h-6 rounded-lg font-bold text-xs flex items-center justify-center border ${
-                      n.num === 0 ? 'bg-emerald-950 text-emerald-300 border-emerald-700' : RED_NUMBERS.has(n.num) ? 'bg-red-950 text-red-300 border-red-800' : 'bg-slate-900 text-slate-400 border-slate-700'
+                      n.num === 0 ? 'bg-emerald-950 text-emerald-300 border-emerald-800' : RED_NUMBERS.has(n.num) ? 'bg-red-950 text-red-300 border-red-800' : 'bg-slate-950 text-slate-400 border-slate-800'
                     }`}
                   >
                     {n.num}
@@ -129,22 +128,22 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history
         </div>
 
         {/* Pushup Color Breakdown */}
-        <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 flex flex-col gap-3">
-          <h4 className="font-bold text-white flex items-center gap-2">
-            <PieChart className="w-4 h-4 text-amber-400" /> Reps by Color Category
+        <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 flex flex-col gap-3">
+          <h4 className="font-extrabold text-white text-sm flex items-center gap-2">
+            <PieChart className="w-4 h-4 text-amber-400" /> {t('pushupsDistribution')}
           </h4>
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="p-3 rounded-xl bg-red-950/60 border border-red-500/40">
-              <span className="block font-bold text-red-400">Red Pockets</span>
-              <span className="text-lg font-black text-white">{redPushups}</span>
+            <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/30">
+              <span className="block font-extrabold text-red-400 text-[11px]">{t('redNumbers')}</span>
+              <span className="text-xl font-black text-white mt-1 block">{redPushups}</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900 border border-slate-700">
-              <span className="block font-bold text-slate-300">Black Pockets</span>
-              <span className="text-lg font-black text-white">{blackPushups}</span>
+            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+              <span className="block font-extrabold text-slate-300 text-[11px]">{t('blackNumbers')}</span>
+              <span className="text-xl font-black text-white mt-1 block">{blackPushups}</span>
             </div>
-            <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40">
-              <span className="block font-bold text-emerald-400">Green Zero</span>
-              <span className="text-lg font-black text-white">{greenPushups}</span>
+            <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30">
+              <span className="block font-extrabold text-emerald-400 text-[11px]">{t('greenZero')}</span>
+              <span className="text-xl font-black text-white mt-1 block">{greenPushups}</span>
             </div>
           </div>
         </div>

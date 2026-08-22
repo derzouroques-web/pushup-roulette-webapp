@@ -12,6 +12,7 @@ import { HistoryLog } from './components/HistoryLog';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SideBetSelector } from './components/SideBetSelector';
 import { LanguageSelector } from './components/LanguageSelector';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { History, BarChart3, Settings, Volume2, VolumeX, Timer } from 'lucide-react';
 
@@ -202,31 +203,28 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-gray-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#090d14] text-gray-100 flex flex-col font-sans">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-md border-b border-amber-500/30 px-4 py-3 shadow-2xl">
+      <header className="sticky top-0 z-30 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 py-2.5 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 flex items-center justify-center text-2xl shadow-lg border border-yellow-200 neon-glow-gold">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-400 flex items-center justify-center text-lg shadow-md border border-yellow-200/50">
               🎰
             </div>
             <div>
-              <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
+              <h1 className="text-base font-black tracking-tight text-white flex items-center gap-1">
                 <span className="text-gold-gradient">{t('appTitle1')}</span>
                 <span className="text-white">{t('appTitle2')}</span>
               </h1>
-              <p className="text-[10px] text-amber-400 font-semibold tracking-wider uppercase">
-                {t('appSubtitle')}
-              </p>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-900/90 p-1 rounded-2xl border border-slate-800">
+          {/* Desktop Navigation Tabs */}
+          <nav className="hidden md:flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
             <button
               onClick={() => setActiveTab('game')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all cursor-pointer ${
                 activeTab === 'game'
                   ? 'bg-amber-500 text-slate-950 shadow'
                   : 'text-slate-400 hover:text-white'
@@ -236,7 +234,7 @@ const AppContent: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all cursor-pointer ${
                 activeTab === 'history'
                   ? 'bg-amber-500 text-slate-950 shadow'
                   : 'text-slate-400 hover:text-white'
@@ -246,7 +244,7 @@ const AppContent: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('stats')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all cursor-pointer ${
                 activeTab === 'stats'
                   ? 'bg-amber-500 text-slate-950 shadow'
                   : 'text-slate-400 hover:text-white'
@@ -257,26 +255,26 @@ const AppContent: React.FC = () => {
           </nav>
 
           {/* Top Quick Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <LanguageSelector />
 
             <button
               onClick={() => setShowRestTimer(!showRestTimer)}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-amber-400 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-amber-400 transition-colors cursor-pointer"
               title={t('restTimerTooltip')}
             >
               <Timer className="w-4 h-4" />
             </button>
             <button
               onClick={() => setSettings(s => ({ ...s, soundEnabled: !s.soundEnabled }))}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-slate-300 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-300 transition-colors cursor-pointer"
               title={t('soundToggleTooltip')}
             >
               {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
             </button>
             <button
               onClick={() => setShowSettingsModal(true)}
-              className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-slate-300 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-300 transition-colors cursor-pointer"
               title={t('settingsTooltip')}
             >
               <Settings className="w-4 h-4" />
@@ -285,35 +283,34 @@ const AppContent: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+      {/* Main Content Area with Bottom Padding for Mobile Nav */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3.5 md:p-6 pb-24 md:pb-6">
         {activeTab === 'game' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 items-start">
             {/* Left Column: Roulette Wheel & Active Turn Banner (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col gap-6">
-              {/* Turn Callout */}
-              <div className="glass-panel-gold rounded-2xl p-4 border border-amber-500/40 flex items-center justify-between shadow-xl">
+            <div className="lg:col-span-5 flex flex-col gap-4">
+              {/* Active Spinner Turn Callout Card */}
+              <div className="bg-slate-900/90 rounded-2xl p-3.5 border border-slate-800/80 flex items-center justify-between shadow-lg">
                 <div className="flex items-center gap-3">
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-2xl border-2 shadow-md"
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-xl border shadow-sm"
                     style={{ borderColor: activePlayer.color, backgroundColor: `${activePlayer.color}22` }}
                   >
                     {activePlayer.avatar}
                   </div>
                   <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">{t('currentSpinner')}</span>
-                    <h2 className="text-lg font-black text-white">{activePlayer.name}</h2>
-                    <p className="text-xs text-slate-400">{activePlayer.totalPushups} {t('totalPushupsLogged')}</p>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">{t('currentSpinner')}</span>
+                    <h2 className="text-base font-black text-white leading-tight">{activePlayer.name}</h2>
                   </div>
                 </div>
 
                 <button
                   onClick={handleStartSpin}
                   disabled={isSpinning}
-                  className={`px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer shrink-0 ${
                     isSpinning
-                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:brightness-110 neon-glow-gold'
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:brightness-110 shadow-amber-500/20'
                   }`}
                 >
                   {isSpinning ? t('spinning') : t('spinWheel')}
@@ -327,8 +324,8 @@ const AppContent: React.FC = () => {
                 disabled={isSpinning}
               />
 
-              {/* Canvas Roulette Wheel */}
-              <div className="glass-panel rounded-3xl p-4 border border-slate-700/60 shadow-2xl flex items-center justify-center">
+              {/* Canvas Roulette Wheel Container */}
+              <div className="bg-slate-900/80 rounded-3xl p-3 sm:p-4 border border-slate-800/80 shadow-xl flex items-center justify-center">
                 <RouletteCanvas
                   eliminatedNumbers={eliminatedNumbers}
                   isSpinning={isSpinning}
@@ -340,7 +337,7 @@ const AppContent: React.FC = () => {
             </div>
 
             {/* Right Column: Player Cards & Betting Board (7 cols) */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
+            <div className="lg:col-span-7 flex flex-col gap-4">
               {/* Player Leaderboard Manager */}
               <PlayerManager
                 players={players}
@@ -366,6 +363,13 @@ const AppContent: React.FC = () => {
         {activeTab === 'history' && <HistoryLog history={history} />}
         {activeTab === 'stats' && <StatsDashboard players={players} history={history} />}
       </main>
+
+      {/* Pinned Mobile Bottom Navigation Bar */}
+      <MobileBottomNav
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        historyCount={history.length}
+      />
 
       {/* Floating Modals */}
       {showSpinModal && landedNumber !== null && (

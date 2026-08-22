@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Player } from '../types';
 import { DEFAULT_AVATARS, PLAYER_COLORS } from '../utils/constants';
-import { UserPlus, Trophy, Flame, Zap, Trash2, Crown, X, Target } from 'lucide-react';
+import { UserPlus, Trophy, Trash2, Crown, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface PlayerManagerProps {
@@ -46,31 +46,51 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
   const highestPushupCount = sortedPlayers[0]?.totalPushups || 1;
 
   return (
-    <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 shadow-xl flex flex-col gap-4 min-h-[320px]">
-      {/* Top Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-700/60">
+    <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-xl flex flex-col gap-4">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
         <div className="flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-amber-400" />
-          <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <span>{t('playersLeaderboard')}</span>
-              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                {players.length} Active
-              </span>
-            </h3>
-            <p className="text-xs text-slate-400">{t('switchPlayer')}</p>
-          </div>
+          <Trophy className="w-4 h-4 text-amber-400" />
+          <h3 className="text-sm font-extrabold text-white tracking-tight flex items-center gap-2">
+            <span>{t('playersLeaderboard')}</span>
+            <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              {players.length}
+            </span>
+          </h3>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow-md hover:brightness-110 transition-all cursor-pointer shrink-0"
+          className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow hover:brightness-110 transition-all cursor-pointer shrink-0"
         >
-          <UserPlus className="w-4 h-4" /> {t('addPlayer')}
+          <UserPlus className="w-3.5 h-3.5" /> {t('addPlayer')}
         </button>
       </div>
 
-      {/* Players List - Expanded Full Width Layout */}
-      <div className="flex flex-col gap-3">
+      {/* Quick Horizontal Player Avatar Selector for Mobile */}
+      {players.length > 1 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
+          {players.map(player => {
+            const isActive = player.id === activePlayerId;
+            return (
+              <button
+                key={player.id}
+                onClick={() => onSelectActivePlayer(player.id)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  isActive
+                    ? 'bg-amber-500/20 border-amber-400 text-amber-300 ring-1 ring-amber-400/50'
+                    : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
+                }`}
+              >
+                <span className="text-base">{player.avatar}</span>
+                <span className="truncate max-w-[80px]">{player.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Clean Leaderboard List */}
+      <div className="flex flex-col gap-2.5">
         {players.map(player => {
           const isActive = player.id === activePlayerId;
           const rankIndex = sortedPlayers.findIndex(p => p.id === player.id);
@@ -80,85 +100,64 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
             <div
               key={player.id}
               onClick={() => onSelectActivePlayer(player.id)}
-              className={`relative p-4.5 rounded-2xl border transition-all cursor-pointer flex flex-col gap-3 ${
+              className={`relative p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col gap-2.5 ${
                 isActive
-                  ? 'bg-gradient-to-r from-amber-500/15 via-slate-900/90 to-amber-500/10 border-amber-500/80 shadow-lg shadow-amber-500/10 ring-2 ring-amber-400/40'
-                  : 'bg-slate-900/70 border-slate-800 hover:border-slate-700'
+                  ? 'bg-slate-900 border-amber-500/60 shadow-md shadow-amber-500/5 ring-1 ring-amber-500/40'
+                  : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
               }`}
             >
-              {/* Active Turn Badge */}
-              {isActive && (
-                <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 text-[10px] font-extrabold uppercase rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow">
-                  Active Turn 🎯
-                </span>
-              )}
-
               {/* Main Info Row */}
               <div className="flex items-center justify-between gap-3">
                 {/* Left: Avatar & Name */}
-                <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-3">
                   <div className="relative">
                     <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner border-2"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner border"
                       style={{ borderColor: player.color, backgroundColor: `${player.color}22` }}
                     >
                       {player.avatar}
                     </div>
                     {rankIndex === 0 && (
-                      <Crown className="w-6 h-6 text-amber-400 absolute -top-2.5 -left-2.5 filter drop-shadow animate-pulse" />
-                    )}
-                    {rankIndex === 1 && (
-                      <span className="absolute -top-2 -left-2 text-sm" title="2nd Place">🥈</span>
-                    )}
-                    {rankIndex === 2 && (
-                      <span className="absolute -top-2 -left-2 text-sm" title="3rd Place">🥉</span>
+                      <Crown className="w-4 h-4 text-amber-400 absolute -top-1.5 -left-1.5 filter drop-shadow" />
                     )}
                   </div>
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="font-extrabold text-white text-base">{player.name}</h4>
-                      {player.difficultyMultiplier !== 1.0 && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-amber-300 border border-slate-700 font-bold">
-                          {player.difficultyMultiplier * 100}% Difficulty
+                      <h4 className="font-extrabold text-white text-sm">{player.name}</h4>
+                      {isActive && (
+                        <span className="text-[9px] px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-extrabold uppercase tracking-wider">
+                          Active
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-1">
-                      <span className="flex items-center gap-1 font-bold text-amber-400 text-sm">
-                        <Flame className="w-4 h-4 text-amber-500" /> {player.totalPushups} Total Reps
+                    <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
+                      <span className="font-extrabold text-amber-400">
+                        {player.totalPushups} reps
                       </span>
-                      <span className="flex items-center gap-1 text-slate-300">
-                        <Zap className="w-3.5 h-3.5 text-blue-400" /> {player.totalSpins} Spins
-                      </span>
-                      {player.maxSingleSpin > 0 && (
-                        <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                          <Target className="w-3.5 h-3.5" /> Max Set: {player.maxSingleSpin} reps
-                        </span>
-                      )}
+                      <span>•</span>
+                      <span>{player.totalSpins} spins</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Right: Actions */}
-                <div className="flex items-center gap-2">
-                  {players.length > 1 && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onRemovePlayer(player.id);
-                      }}
-                      className="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-slate-800 transition-colors cursor-pointer"
-                      title="Remove Player"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
+                {/* Right: Remove Button */}
+                {players.length > 1 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemovePlayer(player.id);
+                    }}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-slate-800 transition-colors cursor-pointer"
+                    title={t('removePlayer')}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
               </div>
 
               {/* Progress Bar Row */}
-              <div className="w-full bg-slate-950/80 h-2 rounded-full overflow-hidden border border-slate-800">
+              <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden border border-slate-800/60">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
@@ -174,12 +173,15 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
       {/* Add Player Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-          <div className="glass-panel-gold rounded-3xl p-6 max-w-md w-full border border-amber-500/40 shadow-2xl max-h-[90vh] overflow-y-auto my-auto relative flex flex-col gap-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+          <div className="bg-slate-900 rounded-t-3xl sm:rounded-3xl p-6 max-w-md w-full border border-slate-800 shadow-2xl relative flex flex-col gap-4 animate-fade-in">
+            {/* Grab Bar for Mobile */}
+            <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto sm:hidden mb-1" />
+
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-amber-500/30 pb-3">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-amber-400" /> Add New Player
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="text-lg font-extrabold text-white flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-amber-400" /> {t('addPlayer')}
               </h3>
               <button
                 type="button"
@@ -192,20 +194,20 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Player Name</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">{t('playerNamePlaceholder')}</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Iron Chest Mark"
+                  placeholder="Player Name"
                   value={newPlayerName}
                   onChange={(e) => setNewPlayerName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-sm"
                 />
               </div>
 
               {/* Avatar Selection */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Choose Avatar</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">{t('selectAvatar')}</label>
                 <div className="flex flex-wrap gap-2">
                   {DEFAULT_AVATARS.map(avatar => (
                     <button
@@ -214,8 +216,8 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                       onClick={() => setSelectedAvatar(avatar)}
                       className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center border transition-all cursor-pointer ${
                         selectedAvatar === avatar
-                          ? 'bg-amber-500/30 border-amber-400 scale-110 shadow-md'
-                          : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                          ? 'bg-amber-500/30 border-amber-400 scale-105 shadow-md'
+                          : 'bg-slate-950 border-slate-800 hover:border-slate-700'
                       }`}
                     >
                       {avatar}
@@ -226,7 +228,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
               {/* Color Selection */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Player Theme Color</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Theme Color</label>
                 <div className="flex flex-wrap gap-2">
                   {PLAYER_COLORS.map(color => (
                     <button
@@ -234,7 +236,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                       type="button"
                       onClick={() => setSelectedColor(color)}
                       className={`w-8 h-8 rounded-full border-2 transition-transform cursor-pointer ${
-                        selectedColor === color ? 'scale-125 border-white shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'
+                        selectedColor === color ? 'scale-110 border-white shadow-lg' : 'border-transparent opacity-80 hover:opacity-100'
                       }`}
                       style={{ backgroundColor: color }}
                     />
@@ -245,18 +247,16 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
               {/* Difficulty Handicapping */}
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Pushup Handicap Multiplier: <strong className="text-amber-400">{difficulty * 100}%</strong>
+                  {t('difficultyHandicap')}: <strong className="text-amber-400">{difficulty * 100}%</strong>
                 </label>
                 <select
                   value={difficulty}
                   onChange={(e) => setDifficulty(parseFloat(e.target.value))}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white focus:outline-none focus:border-amber-400 text-sm cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-400 text-sm cursor-pointer"
                 >
-                  <option value={0.5}>50% - Light (Beginner)</option>
-                  <option value={0.75}>75% - Moderate</option>
-                  <option value={1.0}>100% - Standard (1x)</option>
-                  <option value={1.25}>125% - Hardcore</option>
-                  <option value={1.5}>150% - Beast Mode</option>
+                  <option value={0.75}>{t('diffBeginner')}</option>
+                  <option value={1.0}>{t('diffNormal')}</option>
+                  <option value={1.5}>{t('diffPro')}</option>
                 </select>
               </div>
 
@@ -265,15 +265,15 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2.5 text-xs font-semibold rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
+                  className="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 cursor-pointer"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:brightness-110 shadow-lg cursor-pointer"
+                  className="px-5 py-2 text-xs font-bold rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 shadow-lg cursor-pointer"
                 >
-                  Join Game
+                  {t('savePlayer')}
                 </button>
               </div>
             </form>

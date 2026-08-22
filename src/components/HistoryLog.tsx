@@ -1,108 +1,93 @@
 import React from 'react';
 import type { SpinResult } from '../types';
 import { RED_NUMBERS } from '../utils/constants';
-import { History, CheckCircle2, AlertCircle, XCircle, Flame, Coins } from 'lucide-react';
+import { History, Flame } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HistoryLogProps {
   history: SpinResult[];
 }
 
 export const HistoryLog: React.FC<HistoryLogProps> = ({ history }) => {
+  const { t } = useLanguage();
+
   if (history.length === 0) {
     return (
-      <div className="glass-panel rounded-2xl p-8 border border-slate-700/60 text-center flex flex-col items-center justify-center gap-2 text-slate-400">
+      <div className="bg-slate-900/80 rounded-2xl p-8 border border-slate-800/80 text-center flex flex-col items-center justify-center gap-2 text-slate-400">
         <History className="w-8 h-8 text-slate-600 mb-1" />
-        <h4 className="font-bold text-white">No Spin History Yet</h4>
-        <p className="text-xs">Spin the wheel to log pushup sets for your session!</p>
+        <h4 className="font-bold text-white">{t('noHistory')}</h4>
       </div>
     );
   }
 
   return (
-    <div className="glass-panel rounded-2xl p-5 border border-slate-700/60 shadow-xl flex flex-col gap-4">
-      <div className="flex items-center justify-between border-b border-slate-700/60 pb-3">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <History className="w-5 h-5 text-amber-400" /> Spin History ({history.length} spins)
+    <div className="bg-slate-900/80 rounded-2xl p-4 sm:p-5 border border-slate-800/80 shadow-xl flex flex-col gap-4">
+      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+          <History className="w-4 h-4 text-amber-400" /> {t('historyTitle')} ({history.length})
         </h3>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-300">
-          <thead className="text-xs uppercase bg-slate-900/80 text-slate-400 border-b border-slate-700">
-            <tr>
-              <th className="p-3">#</th>
-              <th className="p-3">Player</th>
-              <th className="p-3">Landed</th>
-              <th className="p-3">Side Bet</th>
-              <th className="p-3">Pushups Done</th>
-              <th className="p-3">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-800">
-            {[...history].reverse().map((spin, idx) => {
-              const isRed = RED_NUMBERS.has(spin.number);
-              const isZero = spin.number === 0;
+      {/* Trade Republic Style Timeline List Feed */}
+      <div className="flex flex-col gap-2.5">
+        {[...history].reverse().map((spin, idx) => {
+          const isRed = RED_NUMBERS.has(spin.number);
+          const isZero = spin.number === 0;
 
-              return (
-                <tr key={spin.id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="p-3 font-mono text-xs text-slate-500">{history.length - idx}</td>
-                  <td className="p-3 font-bold text-white">{spin.playerName}</td>
-                  <td className="p-3">
-                    <span
-                      className={`inline-flex items-center justify-center w-7 h-7 rounded-full font-bold text-xs ${
-                        isZero
-                          ? 'bg-emerald-600 text-white'
-                          : isRed
-                          ? 'bg-red-600 text-white'
-                          : 'bg-slate-900 text-amber-300 border border-slate-700'
-                      }`}
-                    >
-                      {spin.number}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    {spin.sideBet && spin.sideBet !== 'none' ? (
+          return (
+            <div
+              key={spin.id}
+              className="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 flex items-center justify-between gap-3 hover:border-slate-700 transition-colors"
+            >
+              {/* Left: Number Pocket + Player Name */}
+              <div className="flex items-center gap-3">
+                <span
+                  className={`w-9 h-9 rounded-xl font-black text-sm flex items-center justify-center shrink-0 border ${
+                    isZero
+                      ? 'bg-emerald-600 border-emerald-400 text-white shadow-sm'
+                      : isRed
+                      ? 'bg-red-600 border-red-400 text-white shadow-sm'
+                      : 'bg-slate-900 border-slate-700 text-amber-300'
+                  }`}
+                >
+                  {spin.number}
+                </span>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-extrabold text-white text-sm">{spin.playerName}</h4>
+                    {spin.sideBet && spin.sideBet !== 'none' && (
                       <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase border ${
+                        className={`px-1.5 py-0.2 rounded-md text-[10px] font-black uppercase ${
                           spin.sideBetWon
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                            : 'bg-red-500/20 text-red-300 border-red-500/40'
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            : 'bg-red-500/20 text-red-300 border border-red-500/30'
                         }`}
                       >
-                        <Coins className="w-3 h-3" />
-                        {spin.sideBet} ({spin.sideBetWon ? 'Win 0.5x' : 'Loss 1.5x'})
-                      </span>
-                    ) : (
-                      <span className="text-xs text-slate-500 italic">None</span>
-                    )}
-                  </td>
-                  <td className="p-3 font-semibold">
-                    <span className="flex items-center gap-1 text-amber-400">
-                      <Flame className="w-3.5 h-3.5" /> {spin.pushupsDone} / {spin.pushupsAssigned}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    {spin.status === 'completed' && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                        <CheckCircle2 className="w-3 h-3" /> Done
+                        {spin.sideBet} {spin.sideBetWon ? 'Win' : 'Loss'}
                       </span>
                     )}
-                    {spin.status === 'partial' && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                        <AlertCircle className="w-3 h-3" /> Partial
-                      </span>
-                    )}
-                    {spin.status === 'passed' && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
-                        <XCircle className="w-3 h-3" /> Skipped
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">
+                    #{history.length - idx} • {new Date(spin.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: Reps & Status */}
+              <div className="flex flex-col items-end gap-0.5">
+                <span className="font-black text-amber-400 text-sm flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 text-amber-500" /> {spin.pushupsDone} / {spin.pushupsAssigned}
+                </span>
+                <span className="text-[10px] uppercase font-bold text-slate-400">
+                  {spin.status === 'completed' && <span className="text-emerald-400">{t('completed')}</span>}
+                  {spin.status === 'partial' && <span className="text-amber-400">{t('partial')}</span>}
+                  {spin.status === 'passed' && <span className="text-slate-500">{t('passed')}</span>}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
