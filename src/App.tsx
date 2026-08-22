@@ -11,9 +11,13 @@ import { GameSettingsModal } from './components/GameSettingsModal';
 import { HistoryLog } from './components/HistoryLog';
 import { StatsDashboard } from './components/StatsDashboard';
 import { SideBetSelector } from './components/SideBetSelector';
+import { LanguageSelector } from './components/LanguageSelector';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { History, BarChart3, Settings, Volume2, VolumeX, Timer } from 'lucide-react';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { t } = useLanguage();
+
   // State initialization
   const [players, setPlayers] = useState<Player[]>([
     {
@@ -69,7 +73,7 @@ export const App: React.FC = () => {
 
     // Check if pool is empty in elimination mode
     if (settings.eliminationMode && eliminatedNumbers.size >= 37) {
-      alert('All numbers have been eliminated! Resetting wheel pool automatically.');
+      alert(t('allEliminatedAlert'));
       setEliminatedNumbers(new Set());
     }
 
@@ -201,7 +205,7 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-[#0b0f17] text-gray-100 flex flex-col font-sans">
       {/* Top Navbar */}
       <header className="sticky top-0 z-30 bg-slate-950/80 backdrop-blur-md border-b border-amber-500/30 px-4 py-3 shadow-2xl">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 flex items-center justify-center text-2xl shadow-lg border border-yellow-200 neon-glow-gold">
@@ -209,11 +213,11 @@ export const App: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-1.5">
-                <span className="text-gold-gradient">ROULETTE</span>
-                <span className="text-white">PUSHUP</span>
+                <span className="text-gold-gradient">{t('appTitle1')}</span>
+                <span className="text-white">{t('appTitle2')}</span>
               </h1>
               <p className="text-[10px] text-amber-400 font-semibold tracking-wider uppercase">
-                Casino Fitness Challenge
+                {t('appSubtitle')}
               </p>
             </div>
           </div>
@@ -228,7 +232,7 @@ export const App: React.FC = () => {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              🎯 Push Up Game
+              🎯 {t('tabGame')}
             </button>
             <button
               onClick={() => setActiveTab('history')}
@@ -238,7 +242,7 @@ export const App: React.FC = () => {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <History className="w-3.5 h-3.5" /> History ({history.length})
+              <History className="w-3.5 h-3.5" /> {t('tabHistory')} ({history.length})
             </button>
             <button
               onClick={() => setActiveTab('stats')}
@@ -248,30 +252,32 @@ export const App: React.FC = () => {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <BarChart3 className="w-3.5 h-3.5" /> Analytics
+              <BarChart3 className="w-3.5 h-3.5" /> {t('tabStats')}
             </button>
           </nav>
 
           {/* Top Quick Actions */}
           <div className="flex items-center gap-2">
+            <LanguageSelector />
+
             <button
               onClick={() => setShowRestTimer(!showRestTimer)}
               className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-amber-400 transition-colors cursor-pointer"
-              title="Rest Timer"
+              title={t('restTimerTooltip')}
             >
               <Timer className="w-4 h-4" />
             </button>
             <button
               onClick={() => setSettings(s => ({ ...s, soundEnabled: !s.soundEnabled }))}
               className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-slate-300 transition-colors cursor-pointer"
-              title="Toggle Audio FX"
+              title={t('soundToggleTooltip')}
             >
               {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4 text-slate-500" />}
             </button>
             <button
               onClick={() => setShowSettingsModal(true)}
               className="p-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-slate-300 transition-colors cursor-pointer"
-              title="Game Rules & Settings"
+              title={t('settingsTooltip')}
             >
               <Settings className="w-4 h-4" />
             </button>
@@ -295,9 +301,9 @@ export const App: React.FC = () => {
                     {activePlayer.avatar}
                   </div>
                   <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">Current Spinner</span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">{t('currentSpinner')}</span>
                     <h2 className="text-lg font-black text-white">{activePlayer.name}</h2>
-                    <p className="text-xs text-slate-400">{activePlayer.totalPushups} total pushups logged</p>
+                    <p className="text-xs text-slate-400">{activePlayer.totalPushups} {t('totalPushupsLogged')}</p>
                   </div>
                 </div>
 
@@ -310,7 +316,7 @@ export const App: React.FC = () => {
                       : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:brightness-110 neon-glow-gold'
                   }`}
                 >
-                  {isSpinning ? 'Spinning...' : 'Spin Wheel 🎲'}
+                  {isSpinning ? t('spinning') : t('spinWheel')}
                 </button>
               </div>
 
@@ -395,4 +401,11 @@ export const App: React.FC = () => {
   );
 };
 
+export const App: React.FC = () => (
+  <LanguageProvider>
+    <AppContent />
+  </LanguageProvider>
+);
+
 export default App;
+

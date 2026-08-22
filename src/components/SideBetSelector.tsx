@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SideBetType } from '../types';
 import { Coins, TrendingUp, TrendingDown } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface SideBetSelectorProps {
   selectedBet: SideBetType;
@@ -13,12 +14,14 @@ export const SideBetSelector: React.FC<SideBetSelectorProps> = ({
   onSelectBet,
   disabled = false,
 }) => {
+  const { t } = useLanguage();
+
   const bets: Array<{ id: SideBetType; title: string; subtitle: string; icon: string; bgClass: string }> = [
-    { id: 'none', title: 'No Bet', subtitle: 'Standard 1x', icon: '🛡️', bgClass: 'bg-slate-900 border-slate-700 text-slate-300' },
-    { id: 'red', title: 'Red', subtitle: 'Red Pockets', icon: '🔴', bgClass: 'bg-red-950/90 border-red-500/70 text-red-200' },
-    { id: 'black', title: 'Black', subtitle: 'Black Pockets', icon: '🖤', bgClass: 'bg-slate-950 border-slate-700 text-gray-100' },
-    { id: 'odd', title: 'Odd', subtitle: 'Odd Numbers', icon: '⚡', bgClass: 'bg-amber-950/90 border-amber-500/70 text-amber-200' },
-    { id: 'even', title: 'Even', subtitle: 'Even Numbers', icon: '🔢', bgClass: 'bg-emerald-950/90 border-emerald-500/70 text-emerald-200' },
+    { id: 'none', title: t('betNoneTitle'), subtitle: t('betNoneSubtitle'), icon: '🛡️', bgClass: 'bg-slate-900 border-slate-700 text-slate-300' },
+    { id: 'red', title: t('betRedTitle'), subtitle: t('betRedSubtitle'), icon: '🔴', bgClass: 'bg-red-950/90 border-red-500/70 text-red-200' },
+    { id: 'black', title: t('betBlackTitle'), subtitle: t('betBlackSubtitle'), icon: '🖤', bgClass: 'bg-slate-950 border-slate-700 text-gray-100' },
+    { id: 'odd', title: t('betOddTitle'), subtitle: t('betOddSubtitle'), icon: '⚡', bgClass: 'bg-amber-950/90 border-amber-500/70 text-amber-200' },
+    { id: 'even', title: t('betEvenTitle'), subtitle: t('betEvenSubtitle'), icon: '🔢', bgClass: 'bg-emerald-950/90 border-emerald-500/70 text-emerald-200' },
   ];
 
   return (
@@ -28,19 +31,19 @@ export const SideBetSelector: React.FC<SideBetSelectorProps> = ({
         <div className="flex items-center gap-2">
           <Coins className="w-5 h-5 text-amber-400" />
           <h4 className="text-base font-black text-white flex items-center gap-2">
-            <span>Want a side bet?</span>
+            <span>{t('sideBetTitle')}</span>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase font-extrabold tracking-wider">
-              Risk & Reward
+              {t('riskReward')}
             </span>
           </h4>
         </div>
 
         <div className="flex items-center gap-3 text-xs font-bold">
           <span className="text-emerald-400 flex items-center gap-1 bg-emerald-950/60 px-2 py-0.5 rounded-lg border border-emerald-500/30">
-            <TrendingDown className="w-3.5 h-3.5" /> Win: 0.5x Reps
+            <TrendingDown className="w-3.5 h-3.5" /> {t('sideBetWin')}
           </span>
           <span className="text-red-400 flex items-center gap-1 bg-red-950/60 px-2 py-0.5 rounded-lg border border-red-500/30">
-            <TrendingUp className="w-3.5 h-3.5" /> Lose: 1.5x Reps
+            <TrendingUp className="w-3.5 h-3.5" /> {t('sideBetLose')}
           </span>
         </div>
       </div>
@@ -72,7 +75,7 @@ export const SideBetSelector: React.FC<SideBetSelectorProps> = ({
 
               {isSelected && bet.id !== 'none' ? (
                 <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black uppercase tracking-tighter shadow">
-                  BET ACTIVE
+                  {t('betActive')}
                 </span>
               ) : (
                 <span className="h-4" />
@@ -84,3 +87,4 @@ export const SideBetSelector: React.FC<SideBetSelectorProps> = ({
     </div>
   );
 };
+

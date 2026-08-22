@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Player } from '../types';
 import { DEFAULT_AVATARS, PLAYER_COLORS } from '../utils/constants';
 import { UserPlus, Trophy, Flame, Zap, Trash2, Crown, X, Target } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface PlayerManagerProps {
   players: Player[];
@@ -18,6 +19,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
   onAddPlayer,
   onRemovePlayer,
 }) => {
+  const { t } = useLanguage();
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPlayerName, setNewPlayerName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(DEFAULT_AVATARS[0]);
@@ -51,19 +53,19 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
           <Trophy className="w-5 h-5 text-amber-400" />
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <span>Player Roster & Leaderboard</span>
+              <span>{t('playersLeaderboard')}</span>
               <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                {players.length} Players Active
+                {players.length} Active
               </span>
             </h3>
-            <p className="text-xs text-slate-400">Click any player card to manually set active spinner turn</p>
+            <p className="text-xs text-slate-400">{t('switchPlayer')}</p>
           </div>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
           className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 shadow-md hover:brightness-110 transition-all cursor-pointer shrink-0"
         >
-          <UserPlus className="w-4 h-4" /> Add Player
+          <UserPlus className="w-4 h-4" /> {t('addPlayer')}
         </button>
       </div>
 

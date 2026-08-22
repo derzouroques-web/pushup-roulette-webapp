@@ -2,6 +2,7 @@ import React from 'react';
 import { RED_NUMBERS } from '../utils/constants';
 import type { SpinResult } from '../types';
 import { RotateCcw, Trash2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface BettingBoardProps {
   eliminatedNumbers: Set<number>;
@@ -20,6 +21,8 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
   onResetPool,
   lastLandedNumber,
 }) => {
+  const { t } = useLanguage();
+
   // Count frequency of each number landed
   const frequencyMap = new Map<number, number>();
   history.forEach(spin => {
@@ -43,10 +46,10 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-700/60">
         <div>
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <span>🎰 Roulette Layout Grid</span>
+            <span>🎰 {t('boardTitle')}</span>
             {eliminationMode && (
               <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                Elimination Mode ON
+                {t('eliminationModeOn')}
               </span>
             )}
           </h3>
@@ -61,7 +64,7 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 transition-colors cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            Reset Wheel Pool
+            {t('resetPool')}
           </button>
         )}
       </div>
