@@ -11,7 +11,7 @@ interface LanguageOption {
 
 const LANGUAGES: LanguageOption[] = [
   { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'zh', label: '中文', flag: '🇨🇳' },
+  { code: 'zh', label: '繁體中文', flag: '🇹🇼' },
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
 ];
 
