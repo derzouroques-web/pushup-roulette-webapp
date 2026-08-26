@@ -271,7 +271,23 @@ export const RouletteCanvas: React.FC<RouletteCanvasProps> = ({
       // Check if wheel stopped
       if (wheelSpeedRef.current < 0.0015) {
         wheelSpeedRef.current = 0;
-        const landedNumber = getNumberAtPointer(wheelAngleRef.current);
+        let landedNumber = getNumberAtPointer(wheelAngleRef.current);
+
+        // In elimination mode, if landed on an eliminated pocket, resolve to nearest active pocket
+        if (eliminatedNumbers.has(landedNumber) && eliminatedNumbers.size < 37) {
+          const currentIndex = EUROPEAN_WHEEL_SEQUENCE.indexOf(landedNumber);
+          for (let offset = 1; offset < EUROPEAN_WHEEL_SEQUENCE.length; offset++) {
+            const nextIdx = (currentIndex + offset) % EUROPEAN_WHEEL_SEQUENCE.length;
+            const prevIdx = (currentIndex - offset + EUROPEAN_WHEEL_SEQUENCE.length) % EUROPEAN_WHEEL_SEQUENCE.length;
+            if (!eliminatedNumbers.has(EUROPEAN_WHEEL_SEQUENCE[nextIdx])) {
+              landedNumber = EUROPEAN_WHEEL_SEQUENCE[nextIdx];
+              break;
+            } else if (!eliminatedNumbers.has(EUROPEAN_WHEEL_SEQUENCE[prevIdx])) {
+              landedNumber = EUROPEAN_WHEEL_SEQUENCE[prevIdx];
+              break;
+            }
+          }
+        }
 
         setSpinResultNumber(landedNumber);
         audioEngine.playBallBounce();
@@ -301,7 +317,7 @@ export const RouletteCanvas: React.FC<RouletteCanvasProps> = ({
 
     draw(ctx, canvas.width, canvas.height);
     animationRef.current = requestAnimationFrame(animate);
-  }, [isSpinning, getNumberAtPointer, draw, onSpinEnd]);
+  }, [isSpinning, getNumberAtPointer, draw, onSpinEnd, eliminatedNumbers]);
 
   // Handle spin trigger initialization
   useEffect(() => {

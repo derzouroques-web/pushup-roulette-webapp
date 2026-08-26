@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RED_NUMBERS } from '../utils/constants';
-import type { SpinResult } from '../types';
-import { RotateCcw, LayoutGrid } from 'lucide-react';
+import type { SpinResult, HalfBoardMode } from '../types';
+import { RotateCcw, LayoutGrid, Scissors, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface BettingBoardProps {
@@ -10,6 +10,7 @@ interface BettingBoardProps {
   eliminationMode: boolean;
   onToggleEliminate: (num: number) => void;
   onResetPool: () => void;
+  onRemoveHalf?: (mode: Exclude<HalfBoardMode, 'none'>) => void;
   lastLandedNumber?: number | null;
 }
 
@@ -19,9 +20,11 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
   eliminationMode,
   onToggleEliminate,
   onResetPool,
+  onRemoveHalf,
   lastLandedNumber,
 }) => {
   const { t } = useLanguage();
+  const [showHalfMenu, setShowHalfMenu] = useState(false);
 
   // Count frequency of each number landed
   const frequencyMap = new Map<number, number>();
@@ -52,13 +55,68 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
         </div>
 
         {/* Clean Stat Chips */}
-        <div className="flex items-center gap-2 text-[11px] font-bold">
+        <div className="flex items-center gap-2 text-[11px] font-bold flex-wrap">
           <span className="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 text-slate-300">
             Active: <strong className="text-emerald-400">{activeCount}/37</strong>
           </span>
           <span className="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 text-slate-300 hidden sm:inline-block">
             Pool: <strong className="text-amber-400">{remainingTotalPushups} reps</strong>
           </span>
+
+          {eliminationMode && onRemoveHalf && (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowHalfMenu(!showHalfMenu)}
+                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-extrabold rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition-colors cursor-pointer"
+              >
+                <Scissors className="w-3 h-3" />
+                <span>{t('quickRemoveHalf')}</span>
+                <ChevronDown className="w-2.5 h-2.5" />
+              </button>
+
+              {showHalfMenu && (
+                <div className="absolute right-0 top-full mt-1.5 z-20 bg-slate-900 border border-slate-700 rounded-xl shadow-xl py-1 w-44">
+                  <button
+                    onClick={() => {
+                      onRemoveHalf('low');
+                      setShowHalfMenu(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-slate-800 hover:text-white"
+                  >
+                    1-18 (Low)
+                  </button>
+                  <button
+                    onClick={() => {
+                      onRemoveHalf('random');
+                      setShowHalfMenu(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-slate-800 hover:text-white"
+                  >
+                    18 Random
+                  </button>
+                  <button
+                    onClick={() => {
+                      onRemoveHalf('odd');
+                      setShowHalfMenu(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-slate-800 hover:text-white"
+                  >
+                    Odds Only
+                  </button>
+                  <button
+                    onClick={() => {
+                      onRemoveHalf('even');
+                      setShowHalfMenu(false);
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-slate-800 hover:text-white"
+                  >
+                    Evens Only
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {eliminationMode && (
             <button
@@ -84,7 +142,7 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
           } ${
             eliminatedNumbers.has(0)
               ? 'bg-slate-950 text-slate-600 border-slate-800 line-through opacity-40'
-              : 'bg-emerald-700 hover:bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-950/40'
+              : 'bg-emerald-700 hover:bg-emerald-600 text-white border-emerald-500 shadow-md shadow-emerald-950/40 cursor-pointer'
           }`}
         >
           <div className="flex items-center justify-center gap-2 text-sm">
@@ -98,42 +156,40 @@ export const BettingBoard: React.FC<BettingBoardProps> = ({
           )}
         </button>
 
-        {/* 36 Numbers Grid */}
-        <div className="grid grid-cols-3 gap-1.5">
-          {boardRows.map(row =>
-            row.map(num => {
+        {/* 12 Rows of 3 Numbers */}
+        {boardRows.map((row, rIdx) => (
+          <div key={rIdx} className="grid grid-cols-3 gap-1.5">
+            {row.map(num => {
               const isRed = RED_NUMBERS.has(num);
               const isEliminated = eliminatedNumbers.has(num);
               const isLastLanded = lastLandedNumber === num;
-              const hits = frequencyMap.get(num) || 0;
+              const freq = frequencyMap.get(num) || 0;
 
               return (
                 <button
                   key={num}
                   onClick={() => onToggleEliminate(num)}
-                  className={`relative py-2.5 rounded-xl font-black text-base transition-all border flex items-center justify-center ${
-                    isLastLanded ? 'ring-2 ring-yellow-400 scale-[1.02] z-10 shadow-lg' : ''
+                  className={`relative py-2.5 rounded-xl font-black text-sm flex items-center justify-center transition-all border cursor-pointer ${
+                    isLastLanded ? 'ring-2 ring-yellow-400 scale-105 z-10' : ''
                   } ${
                     isEliminated
                       ? 'bg-slate-950 text-slate-600 border-slate-800 line-through opacity-40'
                       : isRed
-                      ? 'bg-red-700/90 hover:bg-red-600 text-white border-red-500/40 shadow-sm'
-                      : 'bg-slate-950 hover:bg-slate-800 text-slate-100 border-slate-800'
+                      ? 'bg-red-700 hover:bg-red-600 text-white border-red-500/60 shadow-md shadow-red-950/30'
+                      : 'bg-slate-900 hover:bg-slate-800 text-slate-100 border-slate-700/80 shadow-md'
                   }`}
                 >
                   <span>{num}</span>
-
-                  {/* Hit count indicator badge */}
-                  {hits > 0 && (
-                    <span className="absolute top-1 right-1.5 px-1.5 py-0.2 text-[9px] bg-slate-900/90 text-amber-300 rounded-full border border-amber-500/30 font-bold">
-                      ×{hits}
+                  {freq > 0 && (
+                    <span className="absolute top-1 right-1 px-1.5 py-0.2 text-[9px] bg-slate-950 text-amber-400 rounded-full border border-amber-500/30 font-bold">
+                      ×{freq}
                     </span>
                   )}
                 </button>
               );
-            })
-          )}
-        </div>
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );

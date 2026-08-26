@@ -36,4 +36,29 @@ export const DEFAULT_SETTINGS: GameSettings = {
   soundEnabled: true,
   autoAdvanceTurn: true,
   zeroPushupBonusRest: true,
+  halfBoardMode: 'none',
 };
+
+export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even'): Set<number> => {
+  const eliminated = new Set<number>();
+  if (mode === 'low') {
+    // Keep 1..18, eliminate 19..36
+    for (let i = 19; i <= 36; i++) eliminated.add(i);
+  } else if (mode === 'odd') {
+    // Keep odd (1, 3.. 35), eliminate even (2, 4.. 36)
+    for (let i = 2; i <= 36; i += 2) eliminated.add(i);
+  } else if (mode === 'even') {
+    // Keep even (2, 4.. 36), eliminate odd (1, 3.. 35)
+    for (let i = 1; i <= 35; i += 2) eliminated.add(i);
+  } else if (mode === 'random') {
+    // Randomly eliminate 18 numbers from 1..36
+    const numbers = Array.from({ length: 36 }, (_, i) => i + 1);
+    for (let i = numbers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+    }
+    numbers.slice(0, 18).forEach(n => eliminated.add(n));
+  }
+  return eliminated;
+};
+

@@ -37,6 +37,9 @@ export interface SpinResult {
   sideBetMultiplier?: number;
 }
 
+export type SoloPreset = 'casual' | 'standard' | 'gauntlet' | 'target';
+export type HalfBoardMode = 'none' | 'low' | 'random' | 'odd' | 'even';
+
 export interface GameSettings {
   eliminationMode: boolean; // Remove drawn numbers from wheel pool
   maxRepCap: number; // 0 for uncapped (up to 36), or fixed limit e.g. 20
@@ -45,6 +48,9 @@ export interface GameSettings {
   soundEnabled: boolean;
   autoAdvanceTurn: boolean;
   zeroPushupBonusRest: boolean; // Special rule: 0 gives 2 mins rest bonus
+  soloPreset?: SoloPreset;
+  targetRepsGoal?: number; // 0 for unlimited / full board clear
+  halfBoardMode?: HalfBoardMode;
 }
 
 export type GameView = 'game' | 'players' | 'history' | 'stats';

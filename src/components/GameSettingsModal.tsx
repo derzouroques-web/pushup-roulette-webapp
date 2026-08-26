@@ -1,5 +1,6 @@
 import React from 'react';
 import type { GameSettings } from '../types';
+import { useLanguage } from '../context/LanguageContext';
 import { Settings, X, Volume2, VolumeX } from 'lucide-react';
 
 interface GameSettingsModalProps {
@@ -13,17 +14,19 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
   onUpdateSettings,
   onClose,
 }) => {
+  const { t } = useLanguage();
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
       <div className="glass-panel-gold rounded-3xl p-6 max-w-md w-full border border-amber-500/40 shadow-2xl flex flex-col gap-5 max-h-[90vh] overflow-y-auto my-auto relative">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-amber-500/30 pb-3">
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <Settings className="w-5 h-5 text-amber-400" /> Game Rules & Settings
+            <Settings className="w-5 h-5 text-amber-400" /> {t('gameRulesSettings')}
           </h3>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -34,9 +37,9 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
           {/* Elimination Mode Toggle */}
           <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
             <div className="pr-3">
-              <label className="font-bold text-white block mb-0.5">Elimination Pool Mode</label>
+              <label className="font-bold text-white block mb-0.5">{t('eliminationModeTitle')}</label>
               <p className="text-xs text-slate-400">
-                Landed numbers are removed from subsequent spins.
+                {t('eliminationModeDesc')}
               </p>
             </div>
             <button
@@ -56,15 +59,16 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
           {/* Pushup Multiplier */}
           <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
             <div>
-              <label className="font-bold text-white block mb-0.5">Pushup Multiplier</label>
-              <p className="text-xs text-slate-400">Scales pushup reps for all players</p>
+              <label className="font-bold text-white block mb-0.5">{t('globalMultiplier')}</label>
+              <p className="text-xs text-slate-400">{t('globalMultiplierDesc')}</p>
             </div>
             <select
               value={settings.multiplier}
               onChange={(e) => onUpdateSettings({ multiplier: parseFloat(e.target.value) })}
-              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold"
+              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold cursor-pointer"
             >
-              <option value={0.5}>0.5x (Light)</option>
+              <option value={0.5}>0.5x (Light / Casual)</option>
+              <option value={0.75}>0.75x (Moderate)</option>
               <option value={1.0}>1.0x (Standard)</option>
               <option value={1.5}>1.5x (Hard)</option>
               <option value={2.0}>2.0x (Double Trouble)</option>
@@ -74,15 +78,16 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
           {/* Max Rep Cap */}
           <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
             <div>
-              <label className="font-bold text-white block mb-0.5">Max Pushups Per Spin</label>
-              <p className="text-xs text-slate-400">Cap max reps (e.g. max 20 per turn)</p>
+              <label className="font-bold text-white block mb-0.5">{t('repCapTitle')}</label>
+              <p className="text-xs text-slate-400">{t('repCapDesc')}</p>
             </div>
             <select
               value={settings.maxRepCap}
               onChange={(e) => onUpdateSettings({ maxRepCap: parseInt(e.target.value) })}
-              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold"
+              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold cursor-pointer"
             >
-              <option value={0}>Uncapped (Up to 36)</option>
+              <option value={0}>{t('uncapped')}</option>
+              <option value={10}>Max 10 Reps</option>
               <option value={15}>Max 15 Reps</option>
               <option value={20}>Max 20 Reps</option>
               <option value={25}>Max 25 Reps</option>
@@ -93,19 +98,19 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
           {/* Default Rest Duration */}
           <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
             <div>
-              <label className="font-bold text-white block mb-0.5">Rest Timer Duration</label>
-              <p className="text-xs text-slate-400">Default rest time after each spin</p>
+              <label className="font-bold text-white block mb-0.5">{t('defaultRestTime')}</label>
+              <p className="text-xs text-slate-400">{t('defaultRestTime')} ({t('seconds')})</p>
             </div>
             <select
               value={settings.defaultRestTime}
               onChange={(e) => onUpdateSettings({ defaultRestTime: parseInt(e.target.value) })}
-              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold"
+              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold cursor-pointer"
             >
-              <option value={30}>30 Seconds</option>
-              <option value={45}>45 Seconds</option>
-              <option value={60}>60 Seconds</option>
-              <option value={90}>90 Seconds</option>
-              <option value={120}>2 Minutes</option>
+              <option value={30}>30 {t('seconds')}</option>
+              <option value={45}>45 {t('seconds')}</option>
+              <option value={60}>60 {t('seconds')}</option>
+              <option value={90}>90 {t('seconds')}</option>
+              <option value={120}>2 mins</option>
             </select>
           </div>
 
@@ -114,8 +119,8 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
             <div className="flex items-center gap-2">
               {settings.soundEnabled ? <Volume2 className="w-5 h-5 text-amber-400" /> : <VolumeX className="w-5 h-5 text-slate-500" />}
               <div>
-                <label className="font-bold text-white block mb-0.5">Sound Effects</label>
-                <p className="text-xs text-slate-400">Wheel spin audio & countdown chimes</p>
+                <label className="font-bold text-white block mb-0.5">{t('soundEffects')}</label>
+                <p className="text-xs text-slate-400">{t('soundEffectsDesc')}</p>
               </div>
             </div>
             <button
@@ -138,7 +143,7 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
           onClick={onClose}
           className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-bold shadow-lg hover:brightness-110 cursor-pointer"
         >
-          Save & Return to Game
+          {t('closeSettings')}
         </button>
       </div>
     </div>

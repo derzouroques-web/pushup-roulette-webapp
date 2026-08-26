@@ -135,6 +135,46 @@ export interface Translations {
   pause: string;
   resume: string;
   skip: string;
+
+  // Welcome & Setup Modal
+  welcomeTitle: string;
+  welcomeSubtitle: string;
+  playerCountLabel: string;
+  soloMode: string;
+  soloModeDesc: string;
+  duoMode: string;
+  duoModeDesc: string;
+  squadMode: string;
+  squadModeDesc: string;
+  customPlayerCount: string;
+  selectSoloPresetTitle: string;
+  selectSoloPresetDesc: string;
+  presetCasualTitle: string;
+  presetCasualDesc: string;
+  presetStandardTitle: string;
+  presetStandardDesc: string;
+  presetTargetTitle: string;
+  presetTargetDesc: string;
+  presetGauntletTitle: string;
+  presetGauntletDesc: string;
+  targetGoalLabel: string;
+  targetGoalHelp: string;
+  setupPlayersTitle: string;
+  startGameBtn: string;
+  changeGameSetup: string;
+  goalAchievedTitle: string;
+  goalAchievedDesc: string;
+  allEliminatedSoloCleared: string;
+  continueWorkout: string;
+  newGame: string;
+  halfBoardOptionTitle: string;
+  halfBoardOptionDesc: string;
+  halfBoardNone: string;
+  halfBoardLow: string;
+  halfBoardRandom: string;
+  halfBoardOdd: string;
+  halfBoardEven: string;
+  quickRemoveHalf: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -273,6 +313,46 @@ export const translations: Record<Language, Translations> = {
     pause: 'Pause',
     resume: 'Resume',
     skip: 'Skip Rest',
+
+    // Welcome & Setup Modal
+    welcomeTitle: 'Push-Up Roulette',
+    welcomeSubtitle: 'How many players are joining the workout today?',
+    playerCountLabel: 'Number of Players',
+    soloMode: '1 Player (Solo Challenge)',
+    soloModeDesc: 'Customized difficulty & balanced targets tailored for a single player',
+    duoMode: '2 Players (Duo Battle)',
+    duoModeDesc: 'Head-to-head pushup showdown, taking turns at the wheel',
+    squadMode: '3+ Players (Squad Party)',
+    squadModeDesc: 'Group workout splitting the roulette gauntlet across friends',
+    customPlayerCount: 'Custom Player Count',
+    selectSoloPresetTitle: 'Select Solo Workout Mode',
+    selectSoloPresetDesc: 'Clearing all 36 pockets is 666 reps! Choose your solo balance preset:',
+    presetCasualTitle: 'Casual Fitness (Recommended)',
+    presetCasualDesc: '0.5x multiplier, capped at max 15 reps per spin (~150-180 reps total)',
+    presetStandardTitle: 'Standard Workout',
+    presetStandardDesc: '0.75x multiplier, capped at max 20 reps per spin (~250 reps total)',
+    presetTargetTitle: 'Target Goal Challenge',
+    presetTargetDesc: 'Race to hit a target pushup milestone (e.g. 50, 100, 150 reps)',
+    presetGauntletTitle: 'Hardcore Gauntlet (666 Reps)',
+    presetGauntletDesc: 'Full 1.0x uncapped roulette challenge for elite athletes',
+    targetGoalLabel: 'Target Pushup Milestone',
+    targetGoalHelp: 'The session ends in victory once your total pushups reach this goal.',
+    setupPlayersTitle: 'Player Lineup & Profiles',
+    startGameBtn: 'Start Workout 🚀',
+    changeGameSetup: 'Setup / Mode',
+    goalAchievedTitle: '🏆 Target Goal Achieved!',
+    goalAchievedDesc: 'Outstanding work! You hit your workout target of {target} pushups!',
+    allEliminatedSoloCleared: '🎉 Roulette Gauntlet Cleared! You defeated all numbers on the board!',
+    continueWorkout: 'Keep Going',
+    newGame: 'New Workout Session',
+    halfBoardOptionTitle: 'Half-Board Mode (Remove Half)',
+    halfBoardOptionDesc: 'Remove half the numbers from the wheel pool to make clearing the board fast & achievable',
+    halfBoardNone: 'Full Board (All 36 Numbers)',
+    halfBoardLow: 'Low Numbers Only (1 to 18) [171 reps total]',
+    halfBoardRandom: '18 Random Numbers [~333 reps total]',
+    halfBoardOdd: 'Odd Numbers Only (1, 3... 35)',
+    halfBoardEven: 'Even Numbers Only (2, 4... 36)',
+    quickRemoveHalf: 'Trim Half Board',
   },
 
   zh: {
@@ -410,6 +490,46 @@ export const translations: Record<Language, Translations> = {
     pause: '暫停',
     resume: '繼續',
     skip: '跳過休息',
+
+    // Welcome & Setup Modal
+    welcomeTitle: '俯臥撐輪盤',
+    welcomeSubtitle: '今天有幾位玩家參與健身挑戰？',
+    playerCountLabel: '玩家人數',
+    soloMode: '1位玩家 (單人挑戰)',
+    soloModeDesc: '為單人量身定制的平衡難度與目標模式',
+    duoMode: '2位玩家 (雙人對戰)',
+    duoModeDesc: '輪流轉動輪盤，一對一俯臥撐對決',
+    squadMode: '3位以上 (多人派對)',
+    squadModeDesc: '團隊協作，共同分擔輪盤總次數',
+    customPlayerCount: '自定義人數',
+    selectSoloPresetTitle: '選擇單人遊戲模式',
+    selectSoloPresetDesc: '轉完所有36個格子需要做666個俯臥撐！請選擇適合您的難度預設：',
+    presetCasualTitle: '休閒健身 (推薦)',
+    presetCasualDesc: '0.5倍係數，單次最多15個 (整局約150-180個)',
+    presetStandardTitle: '標準鍛煉',
+    presetStandardDesc: '0.75倍係數，單次最多20個 (整局約250個)',
+    presetTargetTitle: '目標挑戰模式',
+    presetTargetDesc: '自定義目標總個數 (例如 50、100、150個)，達成即獲勝',
+    presetGauntletTitle: '極限通關 (666個)',
+    presetGauntletDesc: '完整 1.0倍無上限輪盤挑戰，獻給硬核健身達人',
+    targetGoalLabel: '目標俯臥撐總數',
+    targetGoalHelp: '當累計俯臥撐達到此目標時，挑戰宣告成功。',
+    setupPlayersTitle: '玩家名單與個人設定',
+    startGameBtn: '開始訓練 🚀',
+    changeGameSetup: '模式設定',
+    goalAchievedTitle: '🏆 目標達成！',
+    goalAchievedDesc: '太棒了！您已成功完成 {target} 個俯臥撐的訓練目標！',
+    allEliminatedSoloCleared: '🎉 輪盤全清！恭喜您擊敗了輪盤上的所有號碼！',
+    continueWorkout: '繼續挑戰',
+    newGame: '開始新回合',
+    halfBoardOptionTitle: '半盤模式 (移除半數號碼)',
+    halfBoardOptionDesc: '開局預先移除一半號碼，讓單人通關更快、更輕鬆',
+    halfBoardNone: '完整輪盤 (全部36個號碼)',
+    halfBoardLow: '僅小號 (1 到 18) [總計171次]',
+    halfBoardRandom: '隨機18個號碼 [總計約333次]',
+    halfBoardOdd: '僅單數號碼 (1, 3... 35)',
+    halfBoardEven: '僅雙數號碼 (2, 4... 36)',
+    quickRemoveHalf: '精簡半數號碼',
   },
 
   fr: {
@@ -547,5 +667,45 @@ export const translations: Record<Language, Translations> = {
     pause: 'Pause',
     resume: 'Reprendre',
     skip: 'Passer le Repos',
+
+    // Welcome & Setup Modal
+    welcomeTitle: 'Push-Up Roulette',
+    welcomeSubtitle: 'Combien de joueurs participent à la séance aujourd\'hui ?',
+    playerCountLabel: 'Nombre de Joueurs',
+    soloMode: '1 Joueur (Défi Solo)',
+    soloModeDesc: 'Entraînement calibré avec équilibrage et objectifs sur mesure',
+    duoMode: '2 Joueurs (Duel Face-à-Face)',
+    duoModeDesc: 'Chacun son tour à la roulette pour un affrontement intense',
+    squadMode: '3+ Joueurs (En Équipe / Fête)',
+    squadModeDesc: 'Séance de groupe pour partager les 666 pompes du tapis',
+    customPlayerCount: 'Nombre de Joueurs Personnalisé',
+    selectSoloPresetTitle: 'Choisir le Mode Solo',
+    selectSoloPresetDesc: 'Valider les 36 cases représente 666 pompes ! Choisissez votre niveau de difficulté :',
+    presetCasualTitle: 'Fitness Équilibré (Recommandé)',
+    presetCasualDesc: 'Multiplicateur 0.5x, max 15 pompes par tirage (~150-180 pompes au total)',
+    presetStandardTitle: 'Entraînement Standard',
+    presetStandardDesc: 'Multiplicateur 0.75x, max 20 pompes par tirage (~250 pompes au total)',
+    presetTargetTitle: 'Défi Objectif Ciblé',
+    presetTargetDesc: 'Atteindre un objectif total défini (ex. 50, 100, 150 pompes)',
+    presetGauntletTitle: 'Le Grand Chelem (666 Pompes)',
+    presetGauntletDesc: 'Multiplicateur 1.0x sans limite. Le défi extrême pour athlètes aguerris',
+    targetGoalLabel: 'Objectif de Pompes Total',
+    targetGoalHelp: 'La séance se termine victorieusement dès que votre total atteint cet objectif.',
+    setupPlayersTitle: 'Configuration des Joueurs',
+    startGameBtn: 'Lancer l\'Entraînement 🚀',
+    changeGameSetup: 'Mode / Joueurs',
+    goalAchievedTitle: '🏆 Objectif Atteint !',
+    goalAchievedDesc: 'Bravo ! Vous avez atteint votre objectif de {target} pompes !',
+    allEliminatedSoloCleared: '🎉 Tapis Terminé ! Vous avez éliminé toutes les cases de la roulette !',
+    continueWorkout: 'Continuer la Séance',
+    newGame: 'Nouvelle Séance',
+    halfBoardOptionTitle: 'Mode Demi-Tapis (Retirer la Moitié)',
+    halfBoardOptionDesc: 'Retirer la moitié des numéros pour une séance solo plus rapide et accessible',
+    halfBoardNone: 'Tapis Complet (36 Numéros)',
+    halfBoardLow: 'Petits Numéros Uniquement (1 à 18) [171 pompes]',
+    halfBoardRandom: '18 Numéros Aléatoires [~333 pompes]',
+    halfBoardOdd: 'Numéros Impairs Uniquement (1, 3... 35)',
+    halfBoardEven: 'Numéros Pairs Uniquement (2, 4... 36)',
+    quickRemoveHalf: 'Réduire de Moitié',
   },
 };
