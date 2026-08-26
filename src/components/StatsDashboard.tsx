@@ -1,18 +1,21 @@
 import React from 'react';
-import type { Player, SpinResult } from '../types';
+import type { Player, SpinResult, GameSettings } from '../types';
 import { RED_NUMBERS } from '../utils/constants';
-import { Flame, Trophy, Zap, PieChart } from 'lucide-react';
+import { Flame, Trophy, Zap, PieChart, Target } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface StatsDashboardProps {
   players: Player[];
   history: SpinResult[];
+  settings?: GameSettings;
 }
 
-export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history }) => {
+export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history, settings }) => {
   const { t } = useLanguage();
   const totalSessionPushups = history.reduce((acc, s) => acc + s.pushupsDone, 0);
   const totalSpins = history.length;
+  const targetGoal = settings?.targetRepsGoal;
+  const goalPercent = targetGoal && targetGoal > 0 ? Math.min(100, Math.round((totalSessionPushups / targetGoal) * 100)) : null;
 
   // Find MVP (player with most total pushups)
   const mvp = [...players].sort((a, b) => b.totalPushups - a.totalPushups)[0];
@@ -42,6 +45,33 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Target Goal Progress Banner if active */}
+      {goalPercent !== null && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-slate-900 border border-amber-500/30 flex flex-col gap-2.5 shadow-lg">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-extrabold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider">
+              <Target className="w-4 h-4 text-amber-400" /> {t('targetGoalProgress')}
+            </span>
+            <span className="font-black text-white text-sm">
+              {totalSessionPushups} / {targetGoal} reps ({goalPercent}%)
+            </span>
+          </div>
+
+          <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden p-0.5 border border-slate-800">
+            <div
+              className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-700 shadow"
+              style={{ width: `${goalPercent}%` }}
+            />
+          </div>
+
+          <p className="text-[11px] text-slate-400 font-medium">
+            {goalPercent >= 100
+              ? t('goalReached')
+              : t('repsRemaining').replace('{count}', Math.max(0, (targetGoal || 100) - totalSessionPushups).toString())}
+          </p>
+        </div>
+      )}
+
       {/* Top 3 Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-slate-900/80 rounded-2xl p-4 border border-slate-800/80 shadow-lg flex items-center gap-3.5">

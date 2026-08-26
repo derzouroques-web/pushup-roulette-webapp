@@ -184,6 +184,23 @@ export interface Translations {
   summaryRepsEst: string;
   readyToStart: string;
   chooseAvatar: string;
+  activeWorkoutMode: string;
+  workoutObjective: string;
+  targetGoalProgress: string;
+  boardClearanceProgress: string;
+  pocketsCleared: string;
+  repsRemaining: string;
+  goalReached: string;
+  boardCompleted: string;
+  poolRepsRemaining: string;
+  spinGoalPreview: string;
+  spinGoalReachedPreview: string;
+  modeCasualBadge: string;
+  modeStandardBadge: string;
+  modeTargetBadge: string;
+  modeGauntletBadge: string;
+  modeMultiplayerBadge: string;
+  sessionStats: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -371,6 +388,23 @@ export const translations: Record<Language, Translations> = {
     summaryRepsEst: 'Estimated Target Pool',
     readyToStart: 'Ready to sweat? Let’s spin the wheel!',
     chooseAvatar: 'Select your Avatar',
+    activeWorkoutMode: 'Active Mode',
+    workoutObjective: 'Workout Objective',
+    targetGoalProgress: 'Target Pushup Milestone',
+    boardClearanceProgress: 'Roulette Board Clearance',
+    pocketsCleared: '{cleared} of {total} pockets cleared',
+    repsRemaining: '{count} reps remaining to goal',
+    goalReached: 'Goal Reached! 🏆',
+    boardCompleted: 'Board Cleared! 🎉',
+    poolRepsRemaining: '{count} reps left in pool',
+    spinGoalPreview: '+{reps} reps → {next} / {goal} ({percent}%)',
+    spinGoalReachedPreview: '🎉 This spin completes your goal milestone!',
+    modeCasualBadge: 'Casual Fitness (0.5x)',
+    modeStandardBadge: 'Standard Workout (0.75x)',
+    modeTargetBadge: 'Target Challenge',
+    modeGauntletBadge: 'Hardcore Gauntlet (666 Reps)',
+    modeMultiplayerBadge: '{count} Players Showdown',
+    sessionStats: 'Session Metrics',
   },
 
   zh: {
@@ -557,6 +591,23 @@ export const translations: Record<Language, Translations> = {
     summaryRepsEst: '預估總次數池',
     readyToStart: '準備好揮灑汗水了嗎？開始轉動輪盤！',
     chooseAvatar: '選擇您的頭像',
+    activeWorkoutMode: '當前模式',
+    workoutObjective: '訓練目標與進度',
+    targetGoalProgress: '目標俯臥撐進度',
+    boardClearanceProgress: '輪盤清盤進度',
+    pocketsCleared: '已清除 {cleared} / {total} 格',
+    repsRemaining: '距離目標還剩 {count} 次',
+    goalReached: '目標達成！🏆',
+    boardCompleted: '輪盤全清！🎉',
+    poolRepsRemaining: '號碼池剩餘 {count} 次',
+    spinGoalPreview: '+{reps} 次 → {next} / {goal} ({percent}%)',
+    spinGoalReachedPreview: '🎉 完成本輪即可達成目標！',
+    modeCasualBadge: '休閒健身 (0.5x)',
+    modeStandardBadge: '標準鍛煉 (0.75x)',
+    modeTargetBadge: '目標挑戰',
+    modeGauntletBadge: '極限通關 (666次)',
+    modeMultiplayerBadge: '{count}人對決',
+    sessionStats: '本局數據',
   },
 
   fr: {
@@ -743,5 +794,22 @@ export const translations: Record<Language, Translations> = {
     summaryRepsEst: 'Volume total estimé',
     readyToStart: 'Prêt à transpirer ? Faites tourner la roulette !',
     chooseAvatar: 'Choisissez votre avatar',
+    activeWorkoutMode: 'Mode Actif',
+    workoutObjective: 'Objectif & Progression',
+    targetGoalProgress: 'Objectif de Pompes',
+    boardClearanceProgress: 'Progression du Tapis',
+    pocketsCleared: '{cleared} sur {total} cases éliminées',
+    repsRemaining: 'plus que {count} pompes pour atteindre l\'objectif',
+    goalReached: 'Objectif Atteint ! 🏆',
+    boardCompleted: 'Tapis Terminé ! 🎉',
+    poolRepsRemaining: '{count} pompes restantes sur le tapis',
+    spinGoalPreview: '+{reps} pompes → {next} / {goal} ({percent}%)',
+    spinGoalReachedPreview: '🎉 Ce tirage va valider votre objectif de séance !',
+    modeCasualBadge: 'Fitness Équilibré (0.5x)',
+    modeStandardBadge: 'Entraînement Standard (0.75x)',
+    modeTargetBadge: 'Défi Objectif',
+    modeGauntletBadge: 'Grand Chelem (666 Pompes)',
+    modeMultiplayerBadge: 'Duel {count} Joueurs',
+    sessionStats: 'Statistiques de Séance',
   },
 };

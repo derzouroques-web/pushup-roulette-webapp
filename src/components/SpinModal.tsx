@@ -164,11 +164,33 @@ export const SpinModal: React.FC<SpinModalProps> = ({
             </p>
           </div>
         ) : (
-          <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 w-full">
+          <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 w-full flex flex-col gap-2">
             <div className="flex items-center justify-center gap-2 text-2xl font-black text-amber-400">
               <Flame className="w-6 h-6 text-amber-500" />
               <span>{targetPushups} {t('targetPushups')}</span>
             </div>
+
+            {/* Target Goal Progress Preview */}
+            {settings.targetRepsGoal && settings.targetRepsGoal > 0 ? (
+              <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-bold">
+                <span className="text-slate-400 flex items-center gap-1">
+                  <Trophy className="w-3.5 h-3.5 text-amber-400" /> Goal:
+                </span>
+                <span className="text-amber-300">
+                  {player.totalPushups + targetPushups >= settings.targetRepsGoal
+                    ? t('spinGoalReachedPreview')
+                    : t('spinGoalPreview')
+                        .replace('{reps}', targetPushups.toString())
+                        .replace('{next}', (player.totalPushups + targetPushups).toString())
+                        .replace('{goal}', settings.targetRepsGoal.toString())
+                        .replace('{percent}', Math.min(100, Math.round(((player.totalPushups + targetPushups) / settings.targetRepsGoal) * 100)).toString())}
+                </span>
+              </div>
+            ) : (
+              <div className="pt-1.5 border-t border-slate-800/60 text-[10px] text-slate-400 font-medium">
+                {landedNumber} × {settings.multiplier}x {settings.maxRepCap > 0 ? `(Cap ${settings.maxRepCap})` : ''} = {targetPushups} reps
+              </div>
+            )}
           </div>
         )}
 

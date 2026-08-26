@@ -10,6 +10,7 @@ interface PlayerManagerProps {
   onSelectActivePlayer: (id: string) => void;
   onAddPlayer: (player: Omit<Player, 'id' | 'totalPushups' | 'totalSpins' | 'completedSpins' | 'maxSingleSpin' | 'streak'>) => void;
   onRemovePlayer: (id: string) => void;
+  targetGoal?: number;
 }
 
 export const PlayerManager: React.FC<PlayerManagerProps> = ({
@@ -18,6 +19,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
   onSelectActivePlayer,
   onAddPlayer,
   onRemovePlayer,
+  targetGoal,
 }) => {
   const { t } = useLanguage();
   const [showAddModal, setShowAddModal] = useState(false);
@@ -94,7 +96,8 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
         {players.map(player => {
           const isActive = player.id === activePlayerId;
           const rankIndex = sortedPlayers.findIndex(p => p.id === player.id);
-          const progressPercentage = Math.min(100, Math.round((player.totalPushups / (highestPushupCount || 1)) * 100));
+          const maxBase = targetGoal && targetGoal > 0 ? targetGoal : (highestPushupCount || 1);
+          const progressPercentage = Math.min(100, Math.round((player.totalPushups / maxBase) * 100));
 
           return (
             <div
@@ -133,7 +136,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                     </div>
                     <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
                       <span className="font-extrabold text-amber-400">
-                        {player.totalPushups} reps
+                        {player.totalPushups} {targetGoal && targetGoal > 0 ? `/ ${targetGoal}` : ''} reps
                       </span>
                       <span>•</span>
                       <span>{player.totalSpins} spins</span>
@@ -161,7 +164,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{
-                    width: `${Math.max(5, progressPercentage)}%`,
+                    width: `${progressPercentage}%`,
                     backgroundColor: player.color,
                   }}
                 />
