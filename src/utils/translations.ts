@@ -175,6 +175,15 @@ export interface Translations {
   halfBoardOdd: string;
   halfBoardEven: string;
   quickRemoveHalf: string;
+  onboardingWelcome: string;
+  onboardingIntro: string;
+  stepLabel: string;
+  nextStep: string;
+  prevStep: string;
+  summaryTitle: string;
+  summaryRepsEst: string;
+  readyToStart: string;
+  chooseAvatar: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -353,6 +362,15 @@ export const translations: Record<Language, Translations> = {
     halfBoardOdd: 'Odd Numbers Only (1, 3... 35)',
     halfBoardEven: 'Even Numbers Only (2, 4... 36)',
     quickRemoveHalf: 'Trim Half Board',
+    onboardingWelcome: 'Daily Workout Setup',
+    onboardingIntro: 'Before spinning the wheel, let’s quickly calibrate today’s workout session!',
+    stepLabel: 'Step {current} of {total}',
+    nextStep: 'Next Step →',
+    prevStep: '← Back',
+    summaryTitle: 'Session Configuration',
+    summaryRepsEst: 'Estimated Target Pool',
+    readyToStart: 'Ready to sweat? Let’s spin the wheel!',
+    chooseAvatar: 'Select your Avatar',
   },
 
   zh: {
@@ -530,6 +548,15 @@ export const translations: Record<Language, Translations> = {
     halfBoardOdd: '僅單數號碼 (1, 3... 35)',
     halfBoardEven: '僅雙數號碼 (2, 4... 36)',
     quickRemoveHalf: '精簡半數號碼',
+    onboardingWelcome: '今日訓練配置',
+    onboardingIntro: '在轉動輪盤前，讓我們花幾秒鐘為您設定今日的健身挑戰！',
+    stepLabel: '步驟 {current} / {total}',
+    nextStep: '下一步 →',
+    prevStep: '← 上一步',
+    summaryTitle: '訓練配置概覽',
+    summaryRepsEst: '預估總次數池',
+    readyToStart: '準備好揮灑汗水了嗎？開始轉動輪盤！',
+    chooseAvatar: '選擇您的頭像',
   },
 
   fr: {
@@ -707,5 +734,14 @@ export const translations: Record<Language, Translations> = {
     halfBoardOdd: 'Numéros Impairs Uniquement (1, 3... 35)',
     halfBoardEven: 'Numéros Pairs Uniquement (2, 4... 36)',
     quickRemoveHalf: 'Réduire de Moitié',
+    onboardingWelcome: 'Configuration Rapide du Jour',
+    onboardingIntro: 'Avant de lancer la roulette, configurons rapidement votre entraînement du jour !',
+    stepLabel: 'Étape {current} sur {total}',
+    nextStep: 'Étape Suivante →',
+    prevStep: '← Précédent',
+    summaryTitle: 'Récapitulatif de la Séance',
+    summaryRepsEst: 'Volume total estimé',
+    readyToStart: 'Prêt à transpirer ? Faites tourner la roulette !',
+    chooseAvatar: 'Choisissez votre avatar',
   },
 };
