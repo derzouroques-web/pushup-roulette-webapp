@@ -62,3 +62,23 @@ export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even
   return eliminated;
 };
 
+export const getWorkoutTargetPushups = (settings: GameSettings, playersCount: number = 1): number => {
+  if (settings.targetRepsGoal && settings.targetRepsGoal > 0) {
+    return settings.targetRepsGoal;
+  }
+  if (playersCount > 1) {
+    return 666;
+  }
+  if (settings.soloPreset === 'casual') {
+    if (settings.halfBoardMode === 'low') return 86;
+    if (settings.halfBoardMode === 'none') return 180;
+    return 167;
+  }
+  if (settings.soloPreset === 'standard') {
+    return 250;
+  }
+  if (settings.soloPreset === 'gauntlet') {
+    return 666;
+  }
+  return 100;
+};

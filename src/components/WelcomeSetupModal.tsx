@@ -521,21 +521,30 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
                           {t('targetGoalHelp')}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        {[50, 100, 150, 200].map(goal => (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {[50, 100, 150, 200, 250, 300].map(goal => (
                           <button
                             key={goal}
                             type="button"
                             onClick={() => setTargetGoal(goal)}
                             className={`px-3 py-1 rounded-lg text-xs font-bold cursor-pointer transition-all ${
                               targetGoal === goal
-                                ? 'bg-amber-500 text-slate-950 shadow'
+                                ? 'bg-amber-500 text-slate-950 shadow font-extrabold'
                                 : 'bg-slate-800 text-slate-300 hover:text-white border border-slate-700'
                             }`}
                           >
                             {goal}
                           </button>
                         ))}
+                        <input
+                          type="number"
+                          min="10"
+                          max="1000"
+                          step="10"
+                          value={targetGoal}
+                          onChange={e => setTargetGoal(Math.max(10, parseInt(e.target.value) || 10))}
+                          className="w-16 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-400 font-bold text-center focus:outline-none focus:border-amber-500"
+                        />
                       </div>
                     </div>
                   )}

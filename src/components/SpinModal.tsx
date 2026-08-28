@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import type { Player, GameSettings, SideBetType } from '../types';
-import { RED_NUMBERS } from '../utils/constants';
+import { RED_NUMBERS, getWorkoutTargetPushups } from '../utils/constants';
 import { Flame, CheckCircle, SkipForward, Timer, Gift, X, Trophy, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -170,27 +170,29 @@ export const SpinModal: React.FC<SpinModalProps> = ({
               <span>{targetPushups} {t('targetPushups')}</span>
             </div>
 
-            {/* Target Goal Progress Preview */}
-            {settings.targetRepsGoal && settings.targetRepsGoal > 0 ? (
-              <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-bold">
-                <span className="text-slate-400 flex items-center gap-1">
-                  <Trophy className="w-3.5 h-3.5 text-amber-400" /> Goal:
-                </span>
-                <span className="text-amber-300">
-                  {player.totalPushups + targetPushups >= settings.targetRepsGoal
-                    ? t('spinGoalReachedPreview')
-                    : t('spinGoalPreview')
-                        .replace('{reps}', targetPushups.toString())
-                        .replace('{next}', (player.totalPushups + targetPushups).toString())
-                        .replace('{goal}', settings.targetRepsGoal.toString())
-                        .replace('{percent}', Math.min(100, Math.round(((player.totalPushups + targetPushups) / settings.targetRepsGoal) * 100)).toString())}
-                </span>
-              </div>
-            ) : (
-              <div className="pt-1.5 border-t border-slate-800/60 text-[10px] text-slate-400 font-medium">
-                {landedNumber} × {settings.multiplier}x {settings.maxRepCap > 0 ? `(Cap ${settings.maxRepCap})` : ''} = {targetPushups} reps
-              </div>
-            )}
+            {/* Workout Goal Pushup Progress Preview */}
+            {(() => {
+              const workoutGoal = getWorkoutTargetPushups(settings, 1);
+              const nextTotal = player.totalPushups + targetPushups;
+              const nextPercent = Math.min(100, Math.round((nextTotal / workoutGoal) * 100));
+
+              return (
+                <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-bold">
+                  <span className="text-slate-400 flex items-center gap-1">
+                    <Trophy className="w-3.5 h-3.5 text-amber-400" /> Objectif:
+                  </span>
+                  <span className="text-amber-300">
+                    {nextTotal >= workoutGoal
+                      ? t('spinGoalReachedPreview')
+                      : t('spinGoalPreview')
+                          .replace('{reps}', targetPushups.toString())
+                          .replace('{next}', nextTotal.toString())
+                          .replace('{goal}', workoutGoal.toString())
+                          .replace('{percent}', nextPercent.toString())}
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         )}
 

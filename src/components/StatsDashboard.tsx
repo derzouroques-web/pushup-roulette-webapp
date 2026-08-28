@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Player, SpinResult, GameSettings } from '../types';
-import { RED_NUMBERS } from '../utils/constants';
+import { RED_NUMBERS, getWorkoutTargetPushups } from '../utils/constants';
 import { Flame, Trophy, Zap, PieChart, Target } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -14,8 +14,8 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history
   const { t } = useLanguage();
   const totalSessionPushups = history.reduce((acc, s) => acc + s.pushupsDone, 0);
   const totalSpins = history.length;
-  const targetGoal = settings?.targetRepsGoal;
-  const goalPercent = targetGoal && targetGoal > 0 ? Math.min(100, Math.round((totalSessionPushups / targetGoal) * 100)) : null;
+  const targetGoal = settings ? getWorkoutTargetPushups(settings, players.length) : 100;
+  const goalPercent = targetGoal > 0 ? Math.min(100, Math.round((totalSessionPushups / targetGoal) * 100)) : null;
 
   // Find MVP (player with most total pushups)
   const mvp = [...players].sort((a, b) => b.totalPushups - a.totalPushups)[0];

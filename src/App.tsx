@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Player, SpinResult, GameSettings, GameView, SideBetType } from './types';
-import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet } from './utils/constants';
+import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups } from './utils/constants';
 import { audioEngine } from './utils/audio';
 import { RouletteCanvas } from './components/RouletteCanvas';
 import { BettingBoard } from './components/BettingBoard';
@@ -160,8 +160,9 @@ const AppContent: React.FC = () => {
     setShowSpinModal(false);
 
     // Check Goal Completion or Gauntlet Clear Condition
-    if (settings.targetRepsGoal && settings.targetRepsGoal > 0 && newTotalPushups >= settings.targetRepsGoal) {
-      setCelebrationMessage(t('goalAchievedDesc').replace('{target}', settings.targetRepsGoal.toString()));
+    const workoutTarget = getWorkoutTargetPushups(settings, players.length);
+    if (newTotalPushups >= workoutTarget) {
+      setCelebrationMessage(t('goalAchievedDesc').replace('{target}', workoutTarget.toString()));
       setShowCelebrationModal(true);
     } else if (settings.eliminationMode && (eliminatedNumbers.size + 1 >= 37)) {
       setCelebrationMessage(t('allEliminatedSoloCleared'));
@@ -327,89 +328,61 @@ const AppContent: React.FC = () => {
       {/* Main Content Area with Bottom Padding for Mobile Nav */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-3.5 md:p-6 pb-24 md:pb-6">
         {activeTab === 'game' && (
-          <div className="flex flex-col gap-4">
-            {/* Global Workout Mode & Live Progress HUD */}
-            <WorkoutProgressHUD
-              player={activePlayer}
-              players={players}
-              settings={settings}
-              eliminatedNumbers={eliminatedNumbers}
-              onOpenSetupModal={() => setShowSetupModal(true)}
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 items-start">
+            {/* Left Column: Turn & Progress Reminder + Side Bet + Roulette Wheel (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col gap-3 sm:gap-4">
+              {/* Compact Active Turn & Lightweight Progress Reminder Card */}
+              <WorkoutProgressHUD
+                player={activePlayer}
+                players={players}
+                settings={settings}
+                eliminatedNumbers={eliminatedNumbers}
+                onOpenSetupModal={() => setShowSetupModal(true)}
+                isSpinning={isSpinning}
+                onStartSpin={handleStartSpin}
+              />
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 items-start">
-              {/* Left Column: Roulette Wheel & Active Turn Banner (5 cols) */}
-              <div className="lg:col-span-5 flex flex-col gap-4">
-                {/* Active Spinner Turn Callout Card */}
-                <div className="bg-slate-900/90 rounded-2xl p-3.5 border border-slate-800/80 flex items-center justify-between shadow-lg">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-xl border shadow-sm shrink-0"
-                      style={{ borderColor: activePlayer.color, backgroundColor: `${activePlayer.color}22` }}
-                    >
-                      {activePlayer.avatar}
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">{t('currentSpinner')}</span>
-                      <h2 className="text-base font-black text-white leading-tight">{activePlayer.name}</h2>
-                    </div>
-                  </div>
+              {/* Side Bet Selector */}
+              <SideBetSelector
+                selectedBet={currentSideBet}
+                onSelectBet={setCurrentSideBet}
+                disabled={isSpinning}
+              />
 
-                  <button
-                    onClick={handleStartSpin}
-                    disabled={isSpinning}
-                    className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer shrink-0 ${
-                      isSpinning
-                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:brightness-110 shadow-amber-500/20'
-                    }`}
-                  >
-                    {isSpinning ? t('spinning') : t('spinWheel')}
-                  </button>
-                </div>
-
-                {/* Side Bet Selector */}
-                <SideBetSelector
-                  selectedBet={currentSideBet}
-                  onSelectBet={setCurrentSideBet}
+              {/* Canvas Roulette Wheel Container */}
+              <div className="bg-slate-900/80 rounded-3xl p-3 sm:p-4 border border-slate-800/80 shadow-xl flex items-center justify-center">
+                <RouletteCanvas
+                  eliminatedNumbers={eliminatedNumbers}
+                  isSpinning={isSpinning}
+                  onSpinStart={() => setIsSpinning(true)}
+                  onSpinEnd={handleSpinEnd}
                   disabled={isSpinning}
                 />
-
-                {/* Canvas Roulette Wheel Container */}
-                <div className="bg-slate-900/80 rounded-3xl p-3 sm:p-4 border border-slate-800/80 shadow-xl flex items-center justify-center">
-                  <RouletteCanvas
-                    eliminatedNumbers={eliminatedNumbers}
-                    isSpinning={isSpinning}
-                    onSpinStart={() => setIsSpinning(true)}
-                    onSpinEnd={handleSpinEnd}
-                    disabled={isSpinning}
-                  />
-                </div>
               </div>
+            </div>
 
-              {/* Right Column: Player Cards & Betting Board (7 cols) */}
-              <div className="lg:col-span-7 flex flex-col gap-4">
-                {/* Player Leaderboard Manager */}
-                <PlayerManager
-                  players={players}
-                  activePlayerId={activePlayerId}
-                  onSelectActivePlayer={setActivePlayerId}
-                  onAddPlayer={handleAddPlayer}
-                  onRemovePlayer={handleRemovePlayer}
-                  targetGoal={settings.targetRepsGoal}
-                />
+            {/* Right Column: Player Cards & Betting Board (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col gap-4">
+              {/* Player Leaderboard Manager */}
+              <PlayerManager
+                players={players}
+                activePlayerId={activePlayerId}
+                onSelectActivePlayer={setActivePlayerId}
+                onAddPlayer={handleAddPlayer}
+                onRemovePlayer={handleRemovePlayer}
+                targetGoal={getWorkoutTargetPushups(settings, players.length)}
+              />
 
-                {/* Casino Betting Board Grid */}
-                <BettingBoard
-                  eliminatedNumbers={eliminatedNumbers}
-                  history={history}
-                  eliminationMode={settings.eliminationMode}
-                  onToggleEliminate={handleToggleEliminateNumber}
-                  onResetPool={handleResetPool}
-                  onRemoveHalf={handleRemoveHalf}
-                  lastLandedNumber={landedNumber}
-                />
-              </div>
+              {/* Casino Betting Board Grid */}
+              <BettingBoard
+                eliminatedNumbers={eliminatedNumbers}
+                history={history}
+                eliminationMode={settings.eliminationMode}
+                onToggleEliminate={handleToggleEliminateNumber}
+                onResetPool={handleResetPool}
+                onRemoveHalf={handleRemoveHalf}
+                lastLandedNumber={landedNumber}
+              />
             </div>
           </div>
         )}
