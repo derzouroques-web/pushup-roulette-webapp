@@ -2,7 +2,7 @@ import React from 'react';
 import type { Player, GameSettings } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getWorkoutTargetPushups } from '../utils/constants';
-import { Target, Sparkles, Dumbbell, ShieldAlert, Users, RotateCcw, Flame } from 'lucide-react';
+import { Target, Dumbbell, Users, RotateCcw, Flame, Feather } from 'lucide-react';
 
 interface WorkoutProgressHUDProps {
   player: Player;
@@ -26,52 +26,25 @@ export const WorkoutProgressHUD: React.FC<WorkoutProgressHUDProps> = ({
   const { t } = useLanguage();
 
   const isSolo = players.length === 1;
-  const targetPushups = getWorkoutTargetPushups(settings, players.length);
+  const targetPushups = getWorkoutTargetPushups(settings);
   const currentPushups = player.totalPushups;
   const progressPercent = Math.min(100, Math.round((currentPushups / targetPushups) * 100));
   const repsLeft = Math.max(0, targetPushups - currentPushups);
 
   // Mode badge helper
   const getModeBadge = () => {
-    if (!isSolo) {
-      return {
-        icon: <Users className="w-3 h-3 text-blue-400" />,
-        label: t('modeMultiplayerBadge').replace('{count}', players.length.toString()),
-        color: 'bg-blue-500/15 border-blue-500/30 text-blue-300',
-      };
-    }
-    if (settings.soloPreset === 'casual') {
-      return {
-        icon: <Dumbbell className="w-3 h-3 text-amber-400" />,
-        label: `${t('modeCasualBadge')}${settings.halfBoardMode && settings.halfBoardMode !== 'none' ? ' (½)' : ''}`,
-        color: 'bg-amber-500/15 border-amber-500/30 text-amber-300',
-      };
-    }
-    if (settings.soloPreset === 'standard') {
-      return {
-        icon: <Sparkles className="w-3 h-3 text-emerald-400" />,
-        label: t('modeStandardBadge'),
-        color: 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300',
-      };
-    }
-    if (settings.soloPreset === 'target') {
-      return {
-        icon: <Target className="w-3 h-3 text-yellow-400" />,
-        label: `${t('modeTargetBadge')} (${targetPushups}p)`,
-        color: 'bg-yellow-500/15 border-yellow-500/30 text-yellow-300',
-      };
-    }
-    if (settings.soloPreset === 'gauntlet') {
-      return {
-        icon: <ShieldAlert className="w-3 h-3 text-red-400" />,
-        label: t('modeGauntletBadge'),
-        color: 'bg-red-500/15 border-red-500/30 text-red-300',
-      };
-    }
+    const isEasy = settings.workoutMode === 'easy';
+    const playersPrefix = isSolo ? '' : `${players.length}× `;
     return {
-      icon: <Target className="w-3 h-3 text-amber-400" />,
-      label: `${targetPushups} Pompes`,
-      color: 'bg-amber-500/15 border-amber-500/30 text-amber-300',
+      icon: !isSolo
+        ? <Users className={`w-3 h-3 ${isEasy ? 'text-sky-400' : 'text-amber-400'}`} />
+        : isEasy
+        ? <Feather className="w-3 h-3 text-sky-400" />
+        : <Dumbbell className="w-3 h-3 text-amber-400" />,
+      label: `${playersPrefix}${t(isEasy ? 'modeEasyBadge' : 'modeNormalBadge')} · ${targetPushups}`,
+      color: isEasy
+        ? 'bg-sky-500/15 border-sky-500/30 text-sky-300'
+        : 'bg-amber-500/15 border-amber-500/30 text-amber-300',
     };
   };
 

@@ -53,10 +53,6 @@ export interface Translations {
   addPlayer: string;
   playerNamePlaceholder: string;
   selectAvatar: string;
-  difficultyHandicap: string;
-  diffBeginner: string;
-  diffNormal: string;
-  diffPro: string;
   totalReps: string;
   completedReps: string;
   maxSingle: string;
@@ -94,8 +90,6 @@ export interface Translations {
   repCapTitle: string;
   repCapDesc: string;
   uncapped: string;
-  globalMultiplier: string;
-  globalMultiplierDesc: string;
   defaultRestTime: string;
   seconds: string;
   soundEffects: string;
@@ -147,16 +141,17 @@ export interface Translations {
   squadMode: string;
   squadModeDesc: string;
   customPlayerCount: string;
-  selectSoloPresetTitle: string;
-  selectSoloPresetDesc: string;
-  presetCasualTitle: string;
-  presetCasualDesc: string;
-  presetStandardTitle: string;
-  presetStandardDesc: string;
-  presetTargetTitle: string;
-  presetTargetDesc: string;
-  presetGauntletTitle: string;
-  presetGauntletDesc: string;
+  selectModeTitle: string;
+  selectModeDesc: string;
+  modeNormalTitle: string;
+  modeNormalDesc: string;
+  modeEasyTitle: string;
+  modeEasyDesc: string;
+  modeNormalBadge: string;
+  modeEasyBadge: string;
+  summaryTarget: string;
+  pushupsUnit: string;
+  perPlayer: string;
   targetGoalLabel: string;
   targetGoalHelp: string;
   setupPlayersTitle: string;
@@ -164,16 +159,8 @@ export interface Translations {
   changeGameSetup: string;
   goalAchievedTitle: string;
   goalAchievedDesc: string;
-  allEliminatedSoloCleared: string;
   continueWorkout: string;
   newGame: string;
-  halfBoardOptionTitle: string;
-  halfBoardOptionDesc: string;
-  halfBoardNone: string;
-  halfBoardLow: string;
-  halfBoardRandom: string;
-  halfBoardOdd: string;
-  halfBoardEven: string;
   quickRemoveHalf: string;
   onboardingWelcome: string;
   onboardingIntro: string;
@@ -181,7 +168,6 @@ export interface Translations {
   nextStep: string;
   prevStep: string;
   summaryTitle: string;
-  summaryRepsEst: string;
   readyToStart: string;
   chooseAvatar: string;
   activeWorkoutMode: string;
@@ -195,11 +181,6 @@ export interface Translations {
   poolRepsRemaining: string;
   spinGoalPreview: string;
   spinGoalReachedPreview: string;
-  modeCasualBadge: string;
-  modeStandardBadge: string;
-  modeTargetBadge: string;
-  modeGauntletBadge: string;
-  modeMultiplayerBadge: string;
   sessionStats: string;
 }
 
@@ -257,10 +238,6 @@ export const translations: Record<Language, Translations> = {
     addPlayer: 'Add Player',
     playerNamePlaceholder: 'Player Name',
     selectAvatar: 'Select Avatar',
-    difficultyHandicap: 'Handicap',
-    diffBeginner: 'Beginner (0.75x)',
-    diffNormal: 'Normal (1.0x)',
-    diffPro: 'Pro (1.5x)',
     totalReps: 'Total Reps',
     completedReps: 'Completed',
     maxSingle: 'Max Single',
@@ -298,8 +275,6 @@ export const translations: Record<Language, Translations> = {
     repCapTitle: 'Max Pushup Cap',
     repCapDesc: 'Cap single spin pushups (0 = uncapped).',
     uncapped: 'Uncapped',
-    globalMultiplier: 'Global Pushup Multiplier',
-    globalMultiplierDesc: 'Scale target pushups across all players.',
     defaultRestTime: 'Default Rest Timer',
     seconds: 'seconds',
     soundEffects: 'Audio Sound Effects',
@@ -351,33 +326,26 @@ export const translations: Record<Language, Translations> = {
     squadMode: '3+ Players (Squad Party)',
     squadModeDesc: 'Group workout splitting the roulette gauntlet across friends',
     customPlayerCount: 'Custom Player Count',
-    selectSoloPresetTitle: 'Select Solo Workout Mode',
-    selectSoloPresetDesc: 'Clearing all 36 pockets is 666 reps! Choose your solo balance preset:',
-    presetCasualTitle: 'Casual Fitness (Recommended)',
-    presetCasualDesc: '0.5x multiplier, capped at max 15 reps per spin (~150-180 reps total)',
-    presetStandardTitle: 'Standard Workout',
-    presetStandardDesc: '0.75x multiplier, capped at max 20 reps per spin (~250 reps total)',
-    presetTargetTitle: 'Target Goal Challenge',
-    presetTargetDesc: 'Race to hit a target pushup milestone (e.g. 50, 100, 150 reps)',
-    presetGauntletTitle: 'Hardcore Gauntlet (666 Reps)',
-    presetGauntletDesc: 'Full 1.0x uncapped roulette challenge for elite athletes',
-    targetGoalLabel: 'Target Pushup Milestone',
-    targetGoalHelp: 'The session ends in victory once your total pushups reach this goal.',
+    selectModeTitle: 'Choose your mode',
+    selectModeDesc: 'Pick how hard each spin hits, then set your total for today.',
+    modeNormalTitle: 'Normal',
+    modeNormalDesc: 'Do 100% of the number you land on.',
+    modeEasyTitle: 'Easy',
+    modeEasyDesc: 'Do half (50%) of the number you land on.',
+    modeNormalBadge: 'Normal (100%)',
+    modeEasyBadge: 'Easy (50%)',
+    summaryTarget: 'Session Target',
+    pushupsUnit: 'pushups',
+    perPlayer: 'player',
+    targetGoalLabel: 'Total pushups today',
+    targetGoalHelp: 'Spin until you hit this total. The last spin only asks for what\'s left.',
     setupPlayersTitle: 'Player Lineup & Profiles',
     startGameBtn: 'Start Workout 🚀',
     changeGameSetup: 'Setup / Mode',
     goalAchievedTitle: '🏆 Target Goal Achieved!',
     goalAchievedDesc: 'Outstanding work! You hit your workout target of {target} pushups!',
-    allEliminatedSoloCleared: '🎉 Roulette Gauntlet Cleared! You defeated all numbers on the board!',
     continueWorkout: 'Keep Going',
     newGame: 'New Workout Session',
-    halfBoardOptionTitle: 'Half-Board Mode (Remove Half)',
-    halfBoardOptionDesc: 'Remove half the numbers from the wheel pool to make clearing the board fast & achievable',
-    halfBoardNone: 'Full Board (All 36 Numbers)',
-    halfBoardLow: 'Low Numbers Only (1 to 18) [171 reps total]',
-    halfBoardRandom: '18 Random Numbers [~333 reps total]',
-    halfBoardOdd: 'Odd Numbers Only (1, 3... 35)',
-    halfBoardEven: 'Even Numbers Only (2, 4... 36)',
     quickRemoveHalf: 'Trim Half Board',
     onboardingWelcome: 'Daily Workout Setup',
     onboardingIntro: 'Before spinning the wheel, let’s quickly calibrate today’s workout session!',
@@ -385,7 +353,6 @@ export const translations: Record<Language, Translations> = {
     nextStep: 'Next Step →',
     prevStep: '← Back',
     summaryTitle: 'Session Configuration',
-    summaryRepsEst: 'Estimated Target Pool',
     readyToStart: 'Ready to sweat? Let’s spin the wheel!',
     chooseAvatar: 'Select your Avatar',
     activeWorkoutMode: 'Active Mode',
@@ -399,11 +366,6 @@ export const translations: Record<Language, Translations> = {
     poolRepsRemaining: '{count} reps left in pool',
     spinGoalPreview: '+{reps} reps → {next} / {goal} ({percent}%)',
     spinGoalReachedPreview: '🎉 This spin completes your goal milestone!',
-    modeCasualBadge: 'Casual Fitness (0.5x)',
-    modeStandardBadge: 'Standard Workout (0.75x)',
-    modeTargetBadge: 'Target Challenge',
-    modeGauntletBadge: 'Hardcore Gauntlet (666 Reps)',
-    modeMultiplayerBadge: '{count} Players Showdown',
     sessionStats: 'Session Metrics',
   },
 
@@ -460,10 +422,6 @@ export const translations: Record<Language, Translations> = {
     addPlayer: '添加玩家',
     playerNamePlaceholder: '玩家姓名',
     selectAvatar: '選擇頭像',
-    difficultyHandicap: '難度係數',
-    diffBeginner: '新手 (0.75x)',
-    diffNormal: '普通 (1.0x)',
-    diffPro: '專家 (1.5x)',
     totalReps: '總次數',
     completedReps: '已完成',
     maxSingle: '單次最高',
@@ -501,8 +459,6 @@ export const translations: Record<Language, Translations> = {
     repCapTitle: '單次最高上限',
     repCapDesc: '設置單次最多個數（0表示不上限）。',
     uncapped: '無上限',
-    globalMultiplier: '全局俯臥撐倍數',
-    globalMultiplierDesc: '調整所有玩家的目標次數倍率。',
     defaultRestTime: '默認休息時間',
     seconds: '秒',
     soundEffects: '音效開關',
@@ -554,33 +510,26 @@ export const translations: Record<Language, Translations> = {
     squadMode: '3位以上 (多人派對)',
     squadModeDesc: '團隊協作，共同分擔輪盤總次數',
     customPlayerCount: '自定義人數',
-    selectSoloPresetTitle: '選擇單人遊戲模式',
-    selectSoloPresetDesc: '轉完所有36個格子需要做666個俯臥撐！請選擇適合您的難度預設：',
-    presetCasualTitle: '休閒健身 (推薦)',
-    presetCasualDesc: '0.5倍係數，單次最多15個 (整局約150-180個)',
-    presetStandardTitle: '標準鍛煉',
-    presetStandardDesc: '0.75倍係數，單次最多20個 (整局約250個)',
-    presetTargetTitle: '目標挑戰模式',
-    presetTargetDesc: '自定義目標總個數 (例如 50、100、150個)，達成即獲勝',
-    presetGauntletTitle: '極限通關 (666個)',
-    presetGauntletDesc: '完整 1.0倍無上限輪盤挑戰，獻給硬核健身達人',
-    targetGoalLabel: '目標俯臥撐總數',
-    targetGoalHelp: '當累計俯臥撐達到此目標時，挑戰宣告成功。',
+    selectModeTitle: '選擇模式',
+    selectModeDesc: '選擇每次轉盤的強度，然後設定今天的總目標。',
+    modeNormalTitle: '普通',
+    modeNormalDesc: '做轉到數字的 100%。',
+    modeEasyTitle: '輕鬆',
+    modeEasyDesc: '做轉到數字的一半 (50%)。',
+    modeNormalBadge: '普通 (100%)',
+    modeEasyBadge: '輕鬆 (50%)',
+    summaryTarget: '本次目標',
+    pushupsUnit: '個俯臥撐',
+    perPlayer: '每人',
+    targetGoalLabel: '今天的俯臥撐總數',
+    targetGoalHelp: '一直轉到達成總數為止，最後一次只需做剩下的次數。',
     setupPlayersTitle: '玩家名單與個人設定',
     startGameBtn: '開始訓練 🚀',
     changeGameSetup: '模式設定',
     goalAchievedTitle: '🏆 目標達成！',
     goalAchievedDesc: '太棒了！您已成功完成 {target} 個俯臥撐的訓練目標！',
-    allEliminatedSoloCleared: '🎉 輪盤全清！恭喜您擊敗了輪盤上的所有號碼！',
     continueWorkout: '繼續挑戰',
     newGame: '開始新回合',
-    halfBoardOptionTitle: '半盤模式 (移除半數號碼)',
-    halfBoardOptionDesc: '開局預先移除一半號碼，讓單人通關更快、更輕鬆',
-    halfBoardNone: '完整輪盤 (全部36個號碼)',
-    halfBoardLow: '僅小號 (1 到 18) [總計171次]',
-    halfBoardRandom: '隨機18個號碼 [總計約333次]',
-    halfBoardOdd: '僅單數號碼 (1, 3... 35)',
-    halfBoardEven: '僅雙數號碼 (2, 4... 36)',
     quickRemoveHalf: '精簡半數號碼',
     onboardingWelcome: '今日訓練配置',
     onboardingIntro: '在轉動輪盤前，讓我們花幾秒鐘為您設定今日的健身挑戰！',
@@ -588,7 +537,6 @@ export const translations: Record<Language, Translations> = {
     nextStep: '下一步 →',
     prevStep: '← 上一步',
     summaryTitle: '訓練配置概覽',
-    summaryRepsEst: '預估總次數池',
     readyToStart: '準備好揮灑汗水了嗎？開始轉動輪盤！',
     chooseAvatar: '選擇您的頭像',
     activeWorkoutMode: '當前模式',
@@ -602,11 +550,6 @@ export const translations: Record<Language, Translations> = {
     poolRepsRemaining: '號碼池剩餘 {count} 次',
     spinGoalPreview: '+{reps} 次 → {next} / {goal} ({percent}%)',
     spinGoalReachedPreview: '🎉 完成本輪即可達成目標！',
-    modeCasualBadge: '休閒健身 (0.5x)',
-    modeStandardBadge: '標準鍛煉 (0.75x)',
-    modeTargetBadge: '目標挑戰',
-    modeGauntletBadge: '極限通關 (666次)',
-    modeMultiplayerBadge: '{count}人對決',
     sessionStats: '本局數據',
   },
 
@@ -663,10 +606,6 @@ export const translations: Record<Language, Translations> = {
     addPlayer: 'Ajouter un Joueur',
     playerNamePlaceholder: 'Nom du Joueur',
     selectAvatar: 'Choisir un Avatar',
-    difficultyHandicap: 'Handicap',
-    diffBeginner: 'Débutant (0.75x)',
-    diffNormal: 'Normal (1.0x)',
-    diffPro: 'Pro (1.5x)',
     totalReps: 'Total Réps',
     completedReps: 'Complétés',
     maxSingle: 'Max Unique',
@@ -704,8 +643,6 @@ export const translations: Record<Language, Translations> = {
     repCapTitle: 'Limite Max de Pompes',
     repCapDesc: 'Plafonner le nombre max de pompes par lancer (0 = sans limite).',
     uncapped: 'Sans Limite',
-    globalMultiplier: 'Multiplicateur Global',
-    globalMultiplierDesc: 'Ajuster la difficulté pour tous les joueurs.',
     defaultRestTime: 'Temps de Repos Par Défaut',
     seconds: 'secondes',
     soundEffects: 'Effets Sonores',
@@ -757,33 +694,26 @@ export const translations: Record<Language, Translations> = {
     squadMode: '3+ Joueurs (En Équipe / Fête)',
     squadModeDesc: 'Séance de groupe pour partager les 666 pompes du tapis',
     customPlayerCount: 'Nombre de Joueurs Personnalisé',
-    selectSoloPresetTitle: 'Choisir le Mode Solo',
-    selectSoloPresetDesc: 'Valider les 36 cases représente 666 pompes ! Choisissez votre niveau de difficulté :',
-    presetCasualTitle: 'Fitness Équilibré (Recommandé)',
-    presetCasualDesc: 'Multiplicateur 0.5x, max 15 pompes par tirage (~150-180 pompes au total)',
-    presetStandardTitle: 'Entraînement Standard',
-    presetStandardDesc: 'Multiplicateur 0.75x, max 20 pompes par tirage (~250 pompes au total)',
-    presetTargetTitle: 'Défi Objectif Ciblé',
-    presetTargetDesc: 'Atteindre un objectif total défini (ex. 50, 100, 150 pompes)',
-    presetGauntletTitle: 'Le Grand Chelem (666 Pompes)',
-    presetGauntletDesc: 'Multiplicateur 1.0x sans limite. Le défi extrême pour athlètes aguerris',
-    targetGoalLabel: 'Objectif de Pompes Total',
-    targetGoalHelp: 'La séance se termine victorieusement dès que votre total atteint cet objectif.',
+    selectModeTitle: 'Choisir le mode',
+    selectModeDesc: 'Choisissez l\'intensité de chaque tirage, puis votre total du jour.',
+    modeNormalTitle: 'Normal',
+    modeNormalDesc: 'Faites 100% du numéro tiré.',
+    modeEasyTitle: 'Facile',
+    modeEasyDesc: 'Faites la moitié (50%) du numéro tiré.',
+    modeNormalBadge: 'Normal (100%)',
+    modeEasyBadge: 'Facile (50%)',
+    summaryTarget: 'Objectif de la séance',
+    pushupsUnit: 'pompes',
+    perPlayer: 'joueur',
+    targetGoalLabel: 'Total de pompes aujourd\'hui',
+    targetGoalHelp: 'Tirez jusqu\'à atteindre ce total. Le dernier tirage ne demande que ce qui reste.',
     setupPlayersTitle: 'Configuration des Joueurs',
     startGameBtn: 'Lancer l\'Entraînement 🚀',
     changeGameSetup: 'Mode / Joueurs',
     goalAchievedTitle: '🏆 Objectif Atteint !',
     goalAchievedDesc: 'Bravo ! Vous avez atteint votre objectif de {target} pompes !',
-    allEliminatedSoloCleared: '🎉 Tapis Terminé ! Vous avez éliminé toutes les cases de la roulette !',
     continueWorkout: 'Continuer la Séance',
     newGame: 'Nouvelle Séance',
-    halfBoardOptionTitle: 'Mode Demi-Tapis (Retirer la Moitié)',
-    halfBoardOptionDesc: 'Retirer la moitié des numéros pour une séance solo plus rapide et accessible',
-    halfBoardNone: 'Tapis Complet (36 Numéros)',
-    halfBoardLow: 'Petits Numéros Uniquement (1 à 18) [171 pompes]',
-    halfBoardRandom: '18 Numéros Aléatoires [~333 pompes]',
-    halfBoardOdd: 'Numéros Impairs Uniquement (1, 3... 35)',
-    halfBoardEven: 'Numéros Pairs Uniquement (2, 4... 36)',
     quickRemoveHalf: 'Réduire de Moitié',
     onboardingWelcome: 'Configuration du Jour',
     onboardingIntro: 'Avant de lancer la roulette, configurons votre entraînement du jour !',
@@ -791,7 +721,6 @@ export const translations: Record<Language, Translations> = {
     nextStep: 'Étape Suivante →',
     prevStep: '← Précédent',
     summaryTitle: 'Récapitulatif de la Séance',
-    summaryRepsEst: 'Volume total estimé',
     readyToStart: 'Prêt à transpirer ? Faites tourner la roulette !',
     chooseAvatar: 'Choisissez votre avatar',
     activeWorkoutMode: 'Mode Actif',
@@ -805,11 +734,6 @@ export const translations: Record<Language, Translations> = {
     poolRepsRemaining: '{count} pompes restantes sur le tapis',
     spinGoalPreview: '+{reps} pompes → {next} / {goal} ({percent}%)',
     spinGoalReachedPreview: '🎉 Ce tirage va valider votre objectif de séance !',
-    modeCasualBadge: 'Fitness Équilibré (0.5x)',
-    modeStandardBadge: 'Entraînement Standard (0.75x)',
-    modeTargetBadge: 'Défi Objectif',
-    modeGauntletBadge: 'Grand Chelem (666 Pompes)',
-    modeMultiplayerBadge: 'Duel {count} Joueurs',
     sessionStats: 'Statistiques de Séance',
   },
 };

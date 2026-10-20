@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Player, SpinResult, GameSettings, GameView, SideBetType } from './types';
-import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups } from './utils/constants';
+import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups, getAssignedPushups } from './utils/constants';
 import { audioEngine } from './utils/audio';
 import { RouletteCanvas } from './components/RouletteCanvas';
 import { BettingBoard } from './components/BettingBoard';
@@ -28,7 +28,6 @@ const AppContent: React.FC = () => {
       name: 'Player 1',
       avatar: '💪',
       color: '#f59e0b',
-      difficultyMultiplier: 1.0,
       totalPushups: 0,
       totalSpins: 0,
       completedSpins: 0,
@@ -40,13 +39,7 @@ const AppContent: React.FC = () => {
   const [activePlayerId, setActivePlayerId] = useState<string>('p1');
   const [eliminatedNumbers, setEliminatedNumbers] = useState<Set<number>>(new Set());
   const [history, setHistory] = useState<SpinResult[]>([]);
-  const [settings, setSettings] = useState<GameSettings>({
-    ...DEFAULT_SETTINGS,
-    multiplier: 0.5,
-    maxRepCap: 15,
-    soloPreset: 'casual',
-    targetRepsGoal: 0,
-  });
+  const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
   const [currentSideBet, setCurrentSideBet] = useState<SideBetType>('none');
 
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
@@ -113,12 +106,7 @@ const AppContent: React.FC = () => {
       sideBetMultiplier = sideBetWon ? 0.5 : 1.5;
     }
 
-    // Calculate target pushups
-    let baseTarget = landedNumber * settings.multiplier * activePlayer.difficultyMultiplier * sideBetMultiplier;
-    if (settings.maxRepCap > 0 && baseTarget > settings.maxRepCap) {
-      baseTarget = settings.maxRepCap;
-    }
-    const targetPushups = Math.round(baseTarget);
+    const targetPushups = getAssignedPushups(landedNumber, settings, activePlayer, sideBetMultiplier);
 
     const newRecord: SpinResult = {
       id: Date.now().toString(),
@@ -159,13 +147,10 @@ const AppContent: React.FC = () => {
 
     setShowSpinModal(false);
 
-    // Check Goal Completion or Gauntlet Clear Condition
-    const workoutTarget = getWorkoutTargetPushups(settings, players.length);
-    if (newTotalPushups >= workoutTarget) {
+    // Celebrate the moment the player crosses the session target
+    const workoutTarget = getWorkoutTargetPushups(settings);
+    if (activePlayer.totalPushups < workoutTarget && newTotalPushups >= workoutTarget) {
       setCelebrationMessage(t('goalAchievedDesc').replace('{target}', workoutTarget.toString()));
-      setShowCelebrationModal(true);
-    } else if (settings.eliminationMode && (eliminatedNumbers.size + 1 >= 37)) {
-      setCelebrationMessage(t('allEliminatedSoloCleared'));
       setShowCelebrationModal(true);
     }
 
@@ -179,16 +164,20 @@ const AppContent: React.FC = () => {
 
   // Player Setup Confirm Callback
   const handleConfirmSetup = (newPlayers: Player[], newSettings: Partial<GameSettings>) => {
-    setPlayers(newPlayers);
+    // A new setup starts a fresh session
+    setPlayers(newPlayers.map(p => ({
+      ...p,
+      totalPushups: 0,
+      totalSpins: 0,
+      completedSpins: 0,
+      maxSingleSpin: 0,
+      streak: 0,
+    })));
     if (newPlayers.length > 0) {
       setActivePlayerId(newPlayers[0].id);
     }
     setSettings(prev => ({ ...prev, ...newSettings }));
-    let initialEliminated = new Set<number>();
-    if (newSettings.halfBoardMode && newSettings.halfBoardMode !== 'none') {
-      initialEliminated = getHalfBoardEliminatedSet(newSettings.halfBoardMode);
-    }
-    setEliminatedNumbers(initialEliminated);
+    setEliminatedNumbers(new Set());
     setHistory([]);
     setShowSetupModal(false);
   };
@@ -370,7 +359,7 @@ const AppContent: React.FC = () => {
                 onSelectActivePlayer={setActivePlayerId}
                 onAddPlayer={handleAddPlayer}
                 onRemovePlayer={handleRemovePlayer}
-                targetGoal={getWorkoutTargetPushups(settings, players.length)}
+                targetGoal={getWorkoutTargetPushups(settings)}
               />
 
               {/* Casino Betting Board Grid */}

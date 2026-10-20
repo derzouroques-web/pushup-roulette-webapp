@@ -14,7 +14,7 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({ players, history
   const { t } = useLanguage();
   const totalSessionPushups = history.reduce((acc, s) => acc + s.pushupsDone, 0);
   const totalSpins = history.length;
-  const targetGoal = settings ? getWorkoutTargetPushups(settings, players.length) : 100;
+  const targetGoal = (settings ? getWorkoutTargetPushups(settings) : 100) * players.length;
   const goalPercent = targetGoal > 0 ? Math.min(100, Math.round((totalSessionPushups / targetGoal) * 100)) : null;
 
   // Find MVP (player with most total pushups)

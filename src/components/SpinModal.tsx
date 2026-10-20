@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import type { Player, GameSettings, SideBetType } from '../types';
-import { RED_NUMBERS, getWorkoutTargetPushups } from '../utils/constants';
+import { RED_NUMBERS, getWorkoutTargetPushups, getAssignedPushups } from '../utils/constants';
 import { Flame, CheckCircle, SkipForward, Timer, Gift, X, Trophy, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -50,13 +50,7 @@ export const SpinModal: React.FC<SpinModalProps> = ({
     sideBetMultiplier = sideBetWon ? 0.5 : 1.5;
   }
 
-  // Combined multiplier calculation
-  const effectiveMultiplier = settings.multiplier * player.difficultyMultiplier * sideBetMultiplier;
-  let baseTarget = landedNumber * effectiveMultiplier;
-  if (settings.maxRepCap > 0 && baseTarget > settings.maxRepCap) {
-    baseTarget = settings.maxRepCap;
-  }
-  const targetPushups = Math.round(baseTarget);
+  const targetPushups = getAssignedPushups(landedNumber, settings, player, sideBetMultiplier);
 
   const [customReps, setCustomReps] = useState<number>(targetPushups);
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -172,7 +166,7 @@ export const SpinModal: React.FC<SpinModalProps> = ({
 
             {/* Workout Goal Pushup Progress Preview */}
             {(() => {
-              const workoutGoal = getWorkoutTargetPushups(settings, 1);
+              const workoutGoal = getWorkoutTargetPushups(settings);
               const nextTotal = player.totalPushups + targetPushups;
               const nextPercent = Math.min(100, Math.round((nextTotal / workoutGoal) * 100));
 

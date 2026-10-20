@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import type { Player, GameSettings, SoloPreset, HalfBoardMode } from '../types';
+import type { Player, GameSettings, WorkoutMode } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { DEFAULT_AVATARS, PLAYER_COLORS } from '../utils/constants';
-import { Users, User, Trophy, Flame, ShieldAlert, Sparkles, Target, Scissors, ChevronRight, ChevronLeft, Check, Dumbbell, X } from 'lucide-react';
+import { Users, User, Trophy, Flame, Sparkles, Target, ChevronRight, ChevronLeft, Check, Dumbbell, Feather, X } from 'lucide-react';
 
 interface WelcomeSetupModalProps {
   currentPlayers: Player[];
@@ -25,8 +25,7 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
   const [playerCount, setPlayerCount] = useState<number>(currentPlayers.length || 1);
-  const [soloPreset, setSoloPreset] = useState<SoloPreset>(currentSettings.soloPreset || 'casual');
-  const [halfBoardMode, setHalfBoardMode] = useState<HalfBoardMode>(currentSettings.halfBoardMode || 'low');
+  const [workoutMode, setWorkoutMode] = useState<WorkoutMode>(currentSettings.workoutMode);
   const [targetGoal, setTargetGoal] = useState<number>(currentSettings.targetRepsGoal || 100);
 
   // Editable player drafts
@@ -38,7 +37,6 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
         name: 'Player 1',
         avatar: '💪',
         color: PLAYER_COLORS[0],
-        difficultyMultiplier: 1.0,
         totalPushups: 0,
         totalSpins: 0,
         completedSpins: 0,
@@ -63,7 +61,6 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
             name: `Player ${i + 1}`,
             avatar: DEFAULT_AVATARS[i % DEFAULT_AVATARS.length],
             color: PLAYER_COLORS[i % PLAYER_COLORS.length],
-            difficultyMultiplier: 1.0,
             totalPushups: 0,
             totalSpins: 0,
             completedSpins: 0,
@@ -101,73 +98,10 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
   };
 
   const handleFinalizeSetup = () => {
-    let newSettings: Partial<GameSettings> = {
-      soloPreset: playerCount === 1 ? soloPreset : undefined,
-      halfBoardMode: playerCount === 1 ? halfBoardMode : 'none',
-    };
-
-    if (playerCount === 1) {
-      if (soloPreset === 'casual') {
-        newSettings = {
-          ...newSettings,
-          multiplier: 0.5,
-          maxRepCap: 15,
-          targetRepsGoal: 0,
-          eliminationMode: true,
-          halfBoardMode: halfBoardMode,
-        };
-      } else if (soloPreset === 'standard') {
-        newSettings = {
-          ...newSettings,
-          multiplier: 0.75,
-          maxRepCap: 20,
-          targetRepsGoal: 0,
-          eliminationMode: true,
-          halfBoardMode: 'none',
-        };
-      } else if (soloPreset === 'target') {
-        newSettings = {
-          ...newSettings,
-          multiplier: 0.75,
-          maxRepCap: 20,
-          targetRepsGoal: targetGoal,
-          eliminationMode: true,
-          halfBoardMode: 'none',
-        };
-      } else if (soloPreset === 'gauntlet') {
-        newSettings = {
-          ...newSettings,
-          multiplier: 1.0,
-          maxRepCap: 0,
-          targetRepsGoal: 0,
-          eliminationMode: true,
-          halfBoardMode: 'none',
-        };
-      }
-    } else {
-      newSettings = {
-        ...newSettings,
-        multiplier: 1.0,
-        maxRepCap: currentSettings.maxRepCap || 0,
-        targetRepsGoal: 0,
-        eliminationMode: true,
-        halfBoardMode: 'none',
-      };
-    }
-
-    onConfirmSetup(playerDrafts, newSettings);
-  };
-
-  // Estimate total pool pushups for summary card
-  const getEstimatedPoolPushups = () => {
-    if (playerCount > 1) return '~666 pushups (shared)';
-    if (soloPreset === 'target') return `${targetGoal} pushups (milestone)`;
-    if (soloPreset === 'gauntlet') return '666 pushups (hardcore)';
-    if (soloPreset === 'standard') return '~250 pushups';
-    // Casual with half board
-    if (halfBoardMode === 'low') return '~85 pushups (171 / 2)';
-    if (halfBoardMode === 'none') return '~170 pushups';
-    return '~160 pushups';
+    onConfirmSetup(playerDrafts, {
+      workoutMode,
+      targetRepsGoal: targetGoal,
+    });
   };
 
   return (
@@ -348,7 +282,7 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
             </div>
           )}
 
-          {/* STEP 2: Workout Mode & Difficulty Configuration */}
+          {/* STEP 2: Workout Mode & Session Target */}
           {step === 2 && (
             <div
               key="step-2"
@@ -356,241 +290,91 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
                 slideDirection === 'next' ? 'animate-in fade-in slide-in-from-right-4' : 'animate-in fade-in slide-in-from-left-4'
               }`}
             >
-              {playerCount === 1 ? (
-                /* Solo Preset Selector */
-                <div className="space-y-3.5">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-amber-400" />
-                      <h3 className="text-sm font-black text-white">
-                        {t('selectSoloPresetTitle')}
-                      </h3>
-                    </div>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {t('selectSoloPresetDesc')}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {/* Casual */}
-                    <button
-                      type="button"
-                      onClick={() => setSoloPreset('casual')}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                        soloPreset === 'casual'
-                          ? 'bg-amber-500/20 border-amber-500 ring-2 ring-amber-500 shadow-md'
-                          : 'bg-slate-800/70 border-slate-700 hover:border-slate-600'
-                      }`}
-                    >
-                      <span className="text-xs font-black text-white flex items-center gap-1.5">
-                        ⭐ {t('presetCasualTitle')}
-                      </span>
-                      <p className="text-[11px] text-slate-400 leading-snug">
-                        {t('presetCasualDesc')}
-                      </p>
-                    </button>
-
-                    {/* Standard */}
-                    <button
-                      type="button"
-                      onClick={() => setSoloPreset('standard')}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                        soloPreset === 'standard'
-                          ? 'bg-amber-500/20 border-amber-500 ring-2 ring-amber-500 shadow-md'
-                          : 'bg-slate-800/70 border-slate-700 hover:border-slate-600'
-                      }`}
-                    >
-                      <span className="text-xs font-black text-white flex items-center gap-1.5">
-                        💪 {t('presetStandardTitle')}
-                      </span>
-                      <p className="text-[11px] text-slate-400 leading-snug">
-                        {t('presetStandardDesc')}
-                      </p>
-                    </button>
-
-                    {/* Target Goal */}
-                    <button
-                      type="button"
-                      onClick={() => setSoloPreset('target')}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                        soloPreset === 'target'
-                          ? 'bg-amber-500/20 border-amber-500 ring-2 ring-amber-500 shadow-md'
-                          : 'bg-slate-800/70 border-slate-700 hover:border-slate-600'
-                      }`}
-                    >
-                      <span className="text-xs font-black text-white flex items-center gap-1.5">
-                        <Target className="w-3.5 h-3.5 text-amber-400" /> {t('presetTargetTitle')}
-                      </span>
-                      <p className="text-[11px] text-slate-400 leading-snug">
-                        {t('presetTargetDesc')}
-                      </p>
-                    </button>
-
-                    {/* Gauntlet */}
-                    <button
-                      type="button"
-                      onClick={() => setSoloPreset('gauntlet')}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
-                        soloPreset === 'gauntlet'
-                          ? 'bg-red-500/20 border-red-500 ring-2 ring-red-500 shadow-md'
-                          : 'bg-slate-800/70 border-slate-700 hover:border-slate-600'
-                      }`}
-                    >
-                      <span className="text-xs font-black text-red-400 flex items-center gap-1.5">
-                        <ShieldAlert className="w-3.5 h-3.5 text-red-400" /> {t('presetGauntletTitle')}
-                      </span>
-                      <p className="text-[11px] text-slate-400 leading-snug">
-                        {t('presetGauntletDesc')}
-                      </p>
-                    </button>
-                  </div>
-
-                  {/* Half-Board Options under Casual */}
-                  {soloPreset === 'casual' && (
-                    <div className="p-3.5 bg-slate-950/70 rounded-2xl border border-slate-800 space-y-2.5">
-                      <div className="flex items-center gap-2">
-                        <Scissors className="w-3.5 h-3.5 text-amber-400" />
-                        <span className="text-xs font-bold text-white">
-                          {t('halfBoardOptionTitle')}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-slate-400">
-                        {t('halfBoardOptionDesc')}
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => setHalfBoardMode('low')}
-                          className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all cursor-pointer ${
-                            halfBoardMode === 'low'
-                              ? 'bg-amber-500/20 border-amber-500 text-amber-300 ring-1 ring-amber-500'
-                              : 'bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          <span>{t('halfBoardLow')}</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setHalfBoardMode('random')}
-                          className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all cursor-pointer ${
-                            halfBoardMode === 'random'
-                              ? 'bg-amber-500/20 border-amber-500 text-amber-300 ring-1 ring-amber-500'
-                              : 'bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          <span>{t('halfBoardRandom')}</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setHalfBoardMode('odd')}
-                          className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all cursor-pointer ${
-                            halfBoardMode === 'odd'
-                              ? 'bg-amber-500/20 border-amber-500 text-amber-300 ring-1 ring-amber-500'
-                              : 'bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          <span>{t('halfBoardOdd')}</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setHalfBoardMode('none')}
-                          className={`p-2.5 rounded-xl border text-left text-xs font-bold transition-all cursor-pointer ${
-                            halfBoardMode === 'none'
-                              ? 'bg-amber-500/20 border-amber-500 text-amber-300 ring-1 ring-amber-500'
-                              : 'bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          <span>{t('halfBoardNone')}</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Target Goal Selector */}
-                  {soloPreset === 'target' && (
-                    <div className="p-3.5 bg-slate-950/70 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                      <div>
-                        <span className="text-xs font-bold text-slate-300 block">
-                          {t('targetGoalLabel')}
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          {t('targetGoalHelp')}
-                        </span>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        {[50, 100, 150, 200, 250, 300].map(goal => (
-                          <button
-                            key={goal}
-                            type="button"
-                            onClick={() => setTargetGoal(goal)}
-                            className={`px-3 py-1 rounded-lg text-xs font-bold cursor-pointer transition-all ${
-                              targetGoal === goal
-                                ? 'bg-amber-500 text-slate-950 shadow font-extrabold'
-                                : 'bg-slate-800 text-slate-300 hover:text-white border border-slate-700'
-                            }`}
-                          >
-                            {goal}
-                          </button>
-                        ))}
-                        <input
-                          type="number"
-                          min="10"
-                          max="1000"
-                          step="10"
-                          value={targetGoal}
-                          onChange={e => setTargetGoal(Math.max(10, parseInt(e.target.value) || 10))}
-                          className="w-16 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-400 font-bold text-center focus:outline-none focus:border-amber-500"
-                        />
-                      </div>
-                    </div>
-                  )}
+              <div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <h3 className="text-sm font-black text-white">
+                    {t('selectModeTitle')}
+                  </h3>
                 </div>
-              ) : (
-                /* Multiplayer Lineup Setup */
-                <div className="space-y-3">
-                  <label className="text-xs font-black uppercase tracking-wider text-amber-400 block">
-                    {t('setupPlayersTitle')} ({playerDrafts.length})
-                  </label>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {t('selectModeDesc')}
+                </p>
+              </div>
 
-                  <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
-                    {playerDrafts.map((player, idx) => (
-                      <div
-                        key={player.id}
-                        className="flex items-center gap-2.5 p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/70"
-                      >
-                        <div
-                          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl border shadow-sm shrink-0"
-                          style={{ borderColor: player.color, backgroundColor: `${player.color}22` }}
-                        >
-                          {player.avatar}
-                        </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* Normal */}
+                <button
+                  type="button"
+                  onClick={() => setWorkoutMode('normal')}
+                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                    workoutMode === 'normal'
+                      ? 'bg-amber-500/20 border-amber-500 ring-2 ring-amber-500 shadow-md'
+                      : 'bg-slate-800/70 border-slate-700 hover:border-slate-600'
+                  }`}
+                >
+                  <span className="text-xs font-black text-white flex items-center gap-1.5">
+                    <Dumbbell className="w-3.5 h-3.5 text-amber-400" /> {t('modeNormalTitle')}
+                  </span>
+                  <p className="text-[11px] text-slate-400 leading-snug">
+                    {t('modeNormalDesc')}
+                  </p>
+                </button>
 
-                        <input
-                          type="text"
-                          value={player.name}
-                          onChange={e => handleUpdatePlayerDraft(idx, { name: e.target.value })}
-                          placeholder={`Player ${idx + 1}`}
-                          className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 font-bold focus:outline-none focus:border-amber-500"
-                        />
+                {/* Easy */}
+                <button
+                  type="button"
+                  onClick={() => setWorkoutMode('easy')}
+                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col gap-1 ${
+                    workoutMode === 'easy'
+                      ? 'bg-sky-500/20 border-sky-500 ring-2 ring-sky-500 shadow-md'
+                      : 'bg-slate-800/70 border-slate-700 hover:border-slate-600'
+                  }`}
+                >
+                  <span className="text-xs font-black text-white flex items-center gap-1.5">
+                    <Feather className="w-3.5 h-3.5 text-sky-400" /> {t('modeEasyTitle')}
+                  </span>
+                  <p className="text-[11px] text-slate-400 leading-snug">
+                    {t('modeEasyDesc')}
+                  </p>
+                </button>
+              </div>
 
-                        <select
-                          value={player.difficultyMultiplier}
-                          onChange={e => handleUpdatePlayerDraft(idx, { difficultyMultiplier: parseFloat(e.target.value) })}
-                          className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 font-bold focus:outline-none focus:border-amber-500 cursor-pointer"
-                        >
-                          <option value={0.75}>{t('diffBeginner')}</option>
-                          <option value={1.0}>{t('diffNormal')}</option>
-                          <option value={1.5}>{t('diffPro')}</option>
-                        </select>
-                      </div>
-                    ))}
-                  </div>
+              {/* Session Target Selector */}
+              <div className="p-3.5 bg-slate-950/70 rounded-2xl border border-slate-800 flex flex-col gap-2.5">
+                <div>
+                  <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                    <Target className="w-3.5 h-3.5 text-amber-400" /> {t('targetGoalLabel')}
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    {t('targetGoalHelp')}
+                  </span>
                 </div>
-              )}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {[50, 100, 150, 200, 250, 300].map(goal => (
+                    <button
+                      key={goal}
+                      type="button"
+                      onClick={() => setTargetGoal(goal)}
+                      className={`px-3 py-1 rounded-lg text-xs font-bold cursor-pointer transition-all ${
+                        targetGoal === goal
+                          ? 'bg-amber-500 text-slate-950 shadow font-extrabold'
+                          : 'bg-slate-800 text-slate-300 hover:text-white border border-slate-700'
+                      }`}
+                    >
+                      {goal}
+                    </button>
+                  ))}
+                  <input
+                    type="number"
+                    min="1"
+                    max="1000"
+                    value={targetGoal}
+                    onChange={e => setTargetGoal(Math.min(1000, Math.max(1, parseInt(e.target.value) || 1)))}
+                    className="w-16 px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs text-amber-400 font-bold text-center focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
             </div>
           )}
 
@@ -646,6 +430,39 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
                 </div>
               )}
 
+              {/* Multiplayer Lineup Setup */}
+              {playerCount > 1 && (
+                <div className="space-y-3">
+                  <label className="text-xs font-black uppercase tracking-wider text-amber-400 block">
+                    {t('setupPlayersTitle')} ({playerDrafts.length})
+                  </label>
+
+                  <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                    {playerDrafts.map((player, idx) => (
+                      <div
+                        key={player.id}
+                        className="flex items-center gap-2.5 p-2.5 bg-slate-800/60 rounded-xl border border-slate-700/70"
+                      >
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl border shadow-sm shrink-0"
+                          style={{ borderColor: player.color, backgroundColor: `${player.color}22` }}
+                        >
+                          {player.avatar}
+                        </div>
+
+                        <input
+                          type="text"
+                          value={player.name}
+                          onChange={e => handleUpdatePlayerDraft(idx, { name: e.target.value })}
+                          placeholder={`Player ${idx + 1}`}
+                          className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 font-bold focus:outline-none focus:border-amber-500"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Workout Recap Summary Card */}
               <div className="p-4 bg-gradient-to-br from-amber-500/10 via-slate-900 to-slate-950 rounded-2xl border border-amber-500/30 space-y-2.5">
                 <div className="flex items-center gap-2">
@@ -658,15 +475,16 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
                 <div className="grid grid-cols-2 gap-2 text-xs pt-1">
                   <div className="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
                     <span className="text-slate-400 text-[10px] block font-bold">MODE</span>
-                    <span className="text-white font-extrabold capitalize">
-                      {playerCount === 1 ? soloPreset : `${playerCount} Players`}
+                    <span className="text-white font-extrabold">
+                      {t(workoutMode === 'easy' ? 'modeEasyTitle' : 'modeNormalTitle')}
+                      {playerCount > 1 ? ` · ${playerCount} Players` : ''}
                     </span>
                   </div>
 
                   <div className="p-2.5 bg-slate-900/80 rounded-xl border border-slate-800">
-                    <span className="text-slate-400 text-[10px] block font-bold">{t('summaryRepsEst')}</span>
+                    <span className="text-slate-400 text-[10px] block font-bold">{t('summaryTarget')}</span>
                     <span className="text-amber-400 font-extrabold">
-                      {getEstimatedPoolPushups()}
+                      {targetGoal} {t('pushupsUnit')}{playerCount > 1 ? ` / ${t('perPlayer')}` : ''}
                     </span>
                   </div>
                 </div>

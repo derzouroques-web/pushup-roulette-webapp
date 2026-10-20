@@ -1,4 +1,4 @@
-import type { RoulettePocket, GameSettings } from '../types';
+import type { RoulettePocket, GameSettings, Player, WorkoutMode } from '../types';
 
 export const RED_NUMBERS = new Set([
   1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36
@@ -31,12 +31,17 @@ export const PLAYER_COLORS = [
 export const DEFAULT_SETTINGS: GameSettings = {
   eliminationMode: true,
   maxRepCap: 0,
-  multiplier: 1,
+  workoutMode: 'normal',
+  targetRepsGoal: 100,
   defaultRestTime: 60,
   soundEnabled: true,
   autoAdvanceTurn: true,
   zeroPushupBonusRest: true,
-  halfBoardMode: 'none',
+};
+
+export const MODE_MULTIPLIERS: Record<WorkoutMode, number> = {
+  normal: 1,
+  easy: 0.5,
 };
 
 export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even'): Set<number> => {
@@ -62,23 +67,19 @@ export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even
   return eliminated;
 };
 
-export const getWorkoutTargetPushups = (settings: GameSettings, playersCount: number = 1): number => {
-  if (settings.targetRepsGoal && settings.targetRepsGoal > 0) {
-    return settings.targetRepsGoal;
+export const getWorkoutTargetPushups = (settings: GameSettings): number => settings.targetRepsGoal;
+
+export const getAssignedPushups = (
+  landedNumber: number,
+  settings: GameSettings,
+  player: Player,
+  sideBetMultiplier: number = 1
+): number => {
+  let reps = Math.round(landedNumber * MODE_MULTIPLIERS[settings.workoutMode] * sideBetMultiplier);
+  if (settings.maxRepCap > 0) {
+    reps = Math.min(reps, settings.maxRepCap);
   }
-  if (playersCount > 1) {
-    return 666;
-  }
-  if (settings.soloPreset === 'casual') {
-    if (settings.halfBoardMode === 'low') return 86;
-    if (settings.halfBoardMode === 'none') return 180;
-    return 167;
-  }
-  if (settings.soloPreset === 'standard') {
-    return 250;
-  }
-  if (settings.soloPreset === 'gauntlet') {
-    return 666;
-  }
-  return 100;
+  // Last spin of the session only asks for what's left to reach the target
+  const remaining = getWorkoutTargetPushups(settings) - player.totalPushups;
+  return remaining > 0 ? Math.min(reps, remaining) : reps;
 };
