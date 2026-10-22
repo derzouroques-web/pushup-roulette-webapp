@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import type { Player, SpinResult, GameSettings, GameView, SideBetType } from './types';
-import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups } from './utils/constants';
+import type { Player, SpinResult, GameSettings, GameView } from './types';
+import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups, getAssignedPushups } from './utils/constants';
 import { audioEngine } from './utils/audio';
 import { RouletteCanvas } from './components/RouletteCanvas';
 import { BettingBoard } from './components/BettingBoard';
@@ -10,7 +10,6 @@ import { RestTimer } from './components/RestTimer';
 import { GameSettingsModal } from './components/GameSettingsModal';
 import { HistoryLog } from './components/HistoryLog';
 import { StatsDashboard } from './components/StatsDashboard';
-import { SideBetSelector } from './components/SideBetSelector';
 import { LanguageSelector } from './components/LanguageSelector';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { WelcomeSetupModal } from './components/WelcomeSetupModal';
@@ -28,7 +27,6 @@ const AppContent: React.FC = () => {
       name: 'Player 1',
       avatar: '💪',
       color: '#f59e0b',
-      difficultyMultiplier: 1.0,
       totalPushups: 0,
       totalSpins: 0,
       completedSpins: 0,
@@ -40,14 +38,7 @@ const AppContent: React.FC = () => {
   const [activePlayerId, setActivePlayerId] = useState<string>('p1');
   const [eliminatedNumbers, setEliminatedNumbers] = useState<Set<number>>(new Set());
   const [history, setHistory] = useState<SpinResult[]>([]);
-  const [settings, setSettings] = useState<GameSettings>({
-    ...DEFAULT_SETTINGS,
-    multiplier: 0.5,
-    maxRepCap: 15,
-    soloPreset: 'casual',
-    targetRepsGoal: 0,
-  });
-  const [currentSideBet, setCurrentSideBet] = useState<SideBetType>('none');
+  const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
 
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [landedNumber, setLandedNumber] = useState<number | null>(null);
@@ -99,26 +90,7 @@ const AppContent: React.FC = () => {
 
     const pocketColor = landedNumber === 0 ? 'green' : RED_NUMBERS.has(landedNumber) ? 'red' : 'black';
 
-    // Evaluate side bet outcome for history record
-    let sideBetWon: boolean | undefined = undefined;
-    let sideBetMultiplier = 1.0;
-    if (currentSideBet !== 'none') {
-      if (currentSideBet === 'red') sideBetWon = pocketColor === 'red';
-      else if (currentSideBet === 'black') sideBetWon = pocketColor === 'black';
-      else if (currentSideBet === 'odd') sideBetWon = landedNumber !== 0 && (landedNumber % 2 !== 0);
-      else if (currentSideBet === 'even') sideBetWon = landedNumber !== 0 && (landedNumber % 2 === 0);
-      else if (currentSideBet === 'low') sideBetWon = landedNumber >= 1 && landedNumber <= 18;
-      else if (currentSideBet === 'high') sideBetWon = landedNumber >= 19 && landedNumber <= 36;
-
-      sideBetMultiplier = sideBetWon ? 0.5 : 1.5;
-    }
-
-    // Calculate target pushups
-    let baseTarget = landedNumber * settings.multiplier * activePlayer.difficultyMultiplier * sideBetMultiplier;
-    if (settings.maxRepCap > 0 && baseTarget > settings.maxRepCap) {
-      baseTarget = settings.maxRepCap;
-    }
-    const targetPushups = Math.round(baseTarget);
+    const targetPushups = getAssignedPushups(landedNumber, settings, activePlayer);
 
     const newRecord: SpinResult = {
       id: Date.now().toString(),
@@ -131,9 +103,6 @@ const AppContent: React.FC = () => {
       pushupsDone,
       status,
       wasEliminated: settings.eliminationMode,
-      sideBet: currentSideBet,
-      sideBetWon,
-      sideBetMultiplier,
     };
 
     setHistory(prev => [...prev, newRecord]);
@@ -159,13 +128,10 @@ const AppContent: React.FC = () => {
 
     setShowSpinModal(false);
 
-    // Check Goal Completion or Gauntlet Clear Condition
-    const workoutTarget = getWorkoutTargetPushups(settings, players.length);
-    if (newTotalPushups >= workoutTarget) {
+    // Celebrate the moment the player crosses the session target
+    const workoutTarget = getWorkoutTargetPushups(settings);
+    if (activePlayer.totalPushups < workoutTarget && newTotalPushups >= workoutTarget) {
       setCelebrationMessage(t('goalAchievedDesc').replace('{target}', workoutTarget.toString()));
-      setShowCelebrationModal(true);
-    } else if (settings.eliminationMode && (eliminatedNumbers.size + 1 >= 37)) {
-      setCelebrationMessage(t('allEliminatedSoloCleared'));
       setShowCelebrationModal(true);
     }
 
@@ -179,16 +145,20 @@ const AppContent: React.FC = () => {
 
   // Player Setup Confirm Callback
   const handleConfirmSetup = (newPlayers: Player[], newSettings: Partial<GameSettings>) => {
-    setPlayers(newPlayers);
+    // A new setup starts a fresh session
+    setPlayers(newPlayers.map(p => ({
+      ...p,
+      totalPushups: 0,
+      totalSpins: 0,
+      completedSpins: 0,
+      maxSingleSpin: 0,
+      streak: 0,
+    })));
     if (newPlayers.length > 0) {
       setActivePlayerId(newPlayers[0].id);
     }
     setSettings(prev => ({ ...prev, ...newSettings }));
-    let initialEliminated = new Set<number>();
-    if (newSettings.halfBoardMode && newSettings.halfBoardMode !== 'none') {
-      initialEliminated = getHalfBoardEliminatedSet(newSettings.halfBoardMode);
-    }
-    setEliminatedNumbers(initialEliminated);
+    setEliminatedNumbers(new Set());
     setHistory([]);
     setShowSetupModal(false);
   };
@@ -342,13 +312,6 @@ const AppContent: React.FC = () => {
                 onStartSpin={handleStartSpin}
               />
 
-              {/* Side Bet Selector */}
-              <SideBetSelector
-                selectedBet={currentSideBet}
-                onSelectBet={setCurrentSideBet}
-                disabled={isSpinning}
-              />
-
               {/* Canvas Roulette Wheel Container */}
               <div className="bg-slate-900/80 rounded-3xl p-3 sm:p-4 border border-slate-800/80 shadow-xl flex items-center justify-center">
                 <RouletteCanvas
@@ -370,7 +333,7 @@ const AppContent: React.FC = () => {
                 onSelectActivePlayer={setActivePlayerId}
                 onAddPlayer={handleAddPlayer}
                 onRemovePlayer={handleRemovePlayer}
-                targetGoal={getWorkoutTargetPushups(settings, players.length)}
+                targetGoal={getWorkoutTargetPushups(settings)}
               />
 
               {/* Casino Betting Board Grid */}
@@ -454,7 +417,6 @@ const AppContent: React.FC = () => {
           landedNumber={landedNumber}
           player={activePlayer}
           settings={settings}
-          sideBet={currentSideBet}
           onLogResult={handleLogResult}
           onStartRestTimer={() => {
             setShowSpinModal(false);

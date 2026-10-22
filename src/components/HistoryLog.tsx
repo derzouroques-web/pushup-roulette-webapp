@@ -56,17 +56,6 @@ export const HistoryLog: React.FC<HistoryLogProps> = ({ history }) => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h4 className="font-extrabold text-white text-sm">{spin.playerName}</h4>
-                    {spin.sideBet && spin.sideBet !== 'none' && (
-                      <span
-                        className={`px-1.5 py-0.2 rounded-md text-[10px] font-black uppercase ${
-                          spin.sideBetWon
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-red-500/20 text-red-300 border border-red-500/30'
-                        }`}
-                      >
-                        {spin.sideBet} {spin.sideBetWon ? 'Win' : 'Loss'}
-                      </span>
-                    )}
                   </div>
                   <span className="text-[11px] text-slate-400 font-medium">
                     #{history.length - idx} • {new Date(spin.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

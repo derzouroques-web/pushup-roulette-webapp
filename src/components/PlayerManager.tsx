@@ -26,7 +26,6 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
   const [newPlayerName, setNewPlayerName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(DEFAULT_AVATARS[0]);
   const [selectedColor, setSelectedColor] = useState(PLAYER_COLORS[0]);
-  const [difficulty, setDifficulty] = useState(1.0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +35,6 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
       name: newPlayerName.trim(),
       avatar: selectedAvatar,
       color: selectedColor,
-      difficultyMultiplier: difficulty,
     });
 
     setNewPlayerName('');
@@ -245,22 +243,6 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                     />
                   ))}
                 </div>
-              </div>
-
-              {/* Difficulty Handicapping */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  {t('difficultyHandicap')}: <strong className="text-amber-400">{difficulty * 100}%</strong>
-                </label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(parseFloat(e.target.value))}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-amber-400 text-sm cursor-pointer"
-                >
-                  <option value={0.75}>{t('diffBeginner')}</option>
-                  <option value={1.0}>{t('diffNormal')}</option>
-                  <option value={1.5}>{t('diffPro')}</option>
-                </select>
               </div>
 
               {/* Actions */}

@@ -56,25 +56,6 @@ export const GameSettingsModal: React.FC<GameSettingsModalProps> = ({
             </button>
           </div>
 
-          {/* Pushup Multiplier */}
-          <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
-            <div>
-              <label className="font-bold text-white block mb-0.5">{t('globalMultiplier')}</label>
-              <p className="text-xs text-slate-400">{t('globalMultiplierDesc')}</p>
-            </div>
-            <select
-              value={settings.multiplier}
-              onChange={(e) => onUpdateSettings({ multiplier: parseFloat(e.target.value) })}
-              className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-bold cursor-pointer"
-            >
-              <option value={0.5}>0.5x (Light / Casual)</option>
-              <option value={0.75}>0.75x (Moderate)</option>
-              <option value={1.0}>1.0x (Standard)</option>
-              <option value={1.5}>1.5x (Hard)</option>
-              <option value={2.0}>2.0x (Double Trouble)</option>
-            </select>
-          </div>
-
           {/* Max Rep Cap */}
           <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
             <div>
