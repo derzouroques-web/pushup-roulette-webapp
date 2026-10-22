@@ -2,7 +2,7 @@ import React from 'react';
 import type { Player, GameSettings } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { getWorkoutTargetPushups } from '../utils/constants';
-import { Target, Dumbbell, Users, RotateCcw, Flame, Feather } from 'lucide-react';
+import { Target, Users, RotateCcw, Flame } from 'lucide-react';
 
 interface WorkoutProgressHUDProps {
   player: Player;
@@ -31,22 +31,12 @@ export const WorkoutProgressHUD: React.FC<WorkoutProgressHUDProps> = ({
   const progressPercent = Math.min(100, Math.round((currentPushups / targetPushups) * 100));
   const repsLeft = Math.max(0, targetPushups - currentPushups);
 
-  // Mode badge helper
-  const getModeBadge = () => {
-    const isEasy = settings.workoutMode === 'easy';
-    const playersPrefix = isSolo ? '' : `${players.length}× `;
-    return {
-      icon: !isSolo
-        ? <Users className={`w-3 h-3 ${isEasy ? 'text-sky-400' : 'text-amber-400'}`} />
-        : isEasy
-        ? <Feather className="w-3 h-3 text-sky-400" />
-        : <Dumbbell className="w-3 h-3 text-amber-400" />,
-      label: `${playersPrefix}${t(isEasy ? 'modeEasyBadge' : 'modeNormalBadge')} · ${targetPushups}`,
-      color: isEasy
-        ? 'bg-sky-500/15 border-sky-500/30 text-sky-300'
-        : 'bg-amber-500/15 border-amber-500/30 text-amber-300',
-    };
-  };
+  // Setup badge helper
+  const getModeBadge = () => ({
+    icon: isSolo ? <Target className="w-3 h-3 text-amber-400" /> : <Users className="w-3 h-3 text-amber-400" />,
+    label: `${isSolo ? '' : `${players.length} · `}${targetPushups} ${t('pushupsUnit')}`,
+    color: 'bg-amber-500/15 border-amber-500/30 text-amber-300',
+  });
 
   const badge = getModeBadge();
 

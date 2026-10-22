@@ -1,4 +1,4 @@
-import type { RoulettePocket, GameSettings, Player, WorkoutMode } from '../types';
+import type { RoulettePocket, GameSettings, Player } from '../types';
 
 export const RED_NUMBERS = new Set([
   1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36
@@ -31,17 +31,11 @@ export const PLAYER_COLORS = [
 export const DEFAULT_SETTINGS: GameSettings = {
   eliminationMode: true,
   maxRepCap: 0,
-  workoutMode: 'normal',
   targetRepsGoal: 100,
   defaultRestTime: 60,
   soundEnabled: true,
   autoAdvanceTurn: true,
   zeroPushupBonusRest: true,
-};
-
-export const MODE_MULTIPLIERS: Record<WorkoutMode, number> = {
-  normal: 1,
-  easy: 0.5,
 };
 
 export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even'): Set<number> => {
@@ -69,13 +63,9 @@ export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even
 
 export const getWorkoutTargetPushups = (settings: GameSettings): number => settings.targetRepsGoal;
 
-export const getAssignedPushups = (
-  landedNumber: number,
-  settings: GameSettings,
-  player: Player,
-  sideBetMultiplier: number = 1
-): number => {
-  let reps = Math.round(landedNumber * MODE_MULTIPLIERS[settings.workoutMode] * sideBetMultiplier);
+// Always 1x: the landed number is the number of pushups
+export const getAssignedPushups = (landedNumber: number, settings: GameSettings, player: Player): number => {
+  let reps = landedNumber;
   if (settings.maxRepCap > 0) {
     reps = Math.min(reps, settings.maxRepCap);
   }

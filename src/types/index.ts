@@ -1,7 +1,5 @@
 export type PocketColor = 'green' | 'red' | 'black';
 
-export type SideBetType = 'none' | 'red' | 'black' | 'odd' | 'even' | 'low' | 'high';
-
 export interface RoulettePocket {
   number: number;
   color: PocketColor;
@@ -31,18 +29,13 @@ export interface SpinResult {
   pushupsDone: number;
   status: 'completed' | 'partial' | 'passed';
   wasEliminated: boolean;
-  sideBet?: SideBetType;
-  sideBetWon?: boolean;
-  sideBetMultiplier?: number;
 }
 
-export type WorkoutMode = 'normal' | 'easy';
 export type HalfBoardMode = 'none' | 'low' | 'random' | 'odd' | 'even';
 
 export interface GameSettings {
   eliminationMode: boolean; // Remove drawn numbers from wheel pool
   maxRepCap: number; // 0 for uncapped (up to 36), or fixed limit e.g. 20
-  workoutMode: WorkoutMode; // normal = 100% of landed number, easy = 50%
   targetRepsGoal: number; // Total pushups per player for the session
   defaultRestTime: number; // seconds (e.g. 60)
   soundEnabled: boolean;

@@ -21,20 +21,12 @@ export interface Translations {
   allEliminatedAlert: string;
 
   // Side Bet Selector
-  sideBetTitle: string;
   riskReward: string;
-  sideBetWin: string;
-  sideBetLose: string;
   betActive: string;
-  betNoneTitle: string;
   betNoneSubtitle: string;
-  betRedTitle: string;
   betRedSubtitle: string;
-  betBlackTitle: string;
   betBlackSubtitle: string;
-  betOddTitle: string;
   betOddSubtitle: string;
-  betEvenTitle: string;
   betEvenSubtitle: string;
 
   // Betting Board
@@ -68,10 +60,6 @@ export interface Translations {
   greenZeroPocket: string;
   redPocket: string;
   blackPocket: string;
-  sideBetWonHeader: string;
-  sideBetLostHeader: string;
-  sideBetWonSub: string;
-  sideBetLostSub: string;
   targetPushups: string;
   calculationBreakdown: string;
   zeroBonusTitle: string;
@@ -134,27 +122,9 @@ export interface Translations {
   welcomeTitle: string;
   welcomeSubtitle: string;
   playerCountLabel: string;
-  soloMode: string;
-  soloModeDesc: string;
-  duoMode: string;
-  duoModeDesc: string;
-  squadMode: string;
-  squadModeDesc: string;
-  customPlayerCount: string;
-  selectModeTitle: string;
-  selectModeDesc: string;
-  modeNormalTitle: string;
-  modeNormalDesc: string;
-  modeEasyTitle: string;
-  modeEasyDesc: string;
-  modeNormalBadge: string;
-  modeEasyBadge: string;
-  summaryTarget: string;
   pushupsUnit: string;
   perPlayer: string;
   targetGoalLabel: string;
-  targetGoalHelp: string;
-  setupPlayersTitle: string;
   startGameBtn: string;
   changeGameSetup: string;
   goalAchievedTitle: string;
@@ -163,13 +133,6 @@ export interface Translations {
   newGame: string;
   quickRemoveHalf: string;
   onboardingWelcome: string;
-  onboardingIntro: string;
-  stepLabel: string;
-  nextStep: string;
-  prevStep: string;
-  summaryTitle: string;
-  readyToStart: string;
-  chooseAvatar: string;
   activeWorkoutMode: string;
   workoutObjective: string;
   targetGoalProgress: string;
@@ -206,20 +169,12 @@ export const translations: Record<Language, Translations> = {
     allEliminatedAlert: 'All numbers have been eliminated! Resetting wheel pool automatically.',
 
     // Side Bet Selector
-    sideBetTitle: 'Want a side bet?',
     riskReward: 'Risk & Reward',
-    sideBetWin: 'Win: 0.5x Reps',
-    sideBetLose: 'Lose: 1.5x Reps',
     betActive: 'BET ACTIVE',
-    betNoneTitle: 'No Bet',
     betNoneSubtitle: 'Standard 1x',
-    betRedTitle: 'Red',
     betRedSubtitle: 'Red Pockets',
-    betBlackTitle: 'Black',
     betBlackSubtitle: 'Black Pockets',
-    betOddTitle: 'Odd',
     betOddSubtitle: 'Odd Numbers',
-    betEvenTitle: 'Even',
     betEvenSubtitle: 'Even Numbers',
 
     // Betting Board
@@ -253,10 +208,6 @@ export const translations: Record<Language, Translations> = {
     greenZeroPocket: 'Green Zero',
     redPocket: 'Red Pocket',
     blackPocket: 'Black Pocket',
-    sideBetWonHeader: '🎉 SIDE BET WON!',
-    sideBetLostHeader: '💥 SIDE BET LOST!',
-    sideBetWonSub: 'Bet on {bet} — Target reps cut in half!',
-    sideBetLostSub: 'Bet on {bet} — Target reps increased by 50%!',
     targetPushups: 'Target Pushups',
     calculationBreakdown: 'Calculation Breakdown',
     zeroBonusTitle: '🎉 Rest Bonus!',
@@ -319,27 +270,9 @@ export const translations: Record<Language, Translations> = {
     welcomeTitle: 'Push-Up Roulette',
     welcomeSubtitle: 'How many players are joining the workout today?',
     playerCountLabel: 'Number of Players',
-    soloMode: '1 Player (Solo Challenge)',
-    soloModeDesc: 'Customized difficulty & balanced targets tailored for a single player',
-    duoMode: '2 Players (Duo Battle)',
-    duoModeDesc: 'Head-to-head pushup showdown, taking turns at the wheel',
-    squadMode: '3+ Players (Squad Party)',
-    squadModeDesc: 'Group workout splitting the roulette gauntlet across friends',
-    customPlayerCount: 'Custom Player Count',
-    selectModeTitle: 'Choose your mode',
-    selectModeDesc: 'Pick how hard each spin hits, then set your total for today.',
-    modeNormalTitle: 'Normal',
-    modeNormalDesc: 'Do 100% of the number you land on.',
-    modeEasyTitle: 'Easy',
-    modeEasyDesc: 'Do half (50%) of the number you land on.',
-    modeNormalBadge: 'Normal (100%)',
-    modeEasyBadge: 'Easy (50%)',
-    summaryTarget: 'Session Target',
     pushupsUnit: 'pushups',
     perPlayer: 'player',
     targetGoalLabel: 'Total pushups today',
-    targetGoalHelp: 'Spin until you hit this total. The last spin only asks for what\'s left.',
-    setupPlayersTitle: 'Player Lineup & Profiles',
     startGameBtn: 'Start Workout 🚀',
     changeGameSetup: 'Setup / Mode',
     goalAchievedTitle: '🏆 Target Goal Achieved!',
@@ -348,13 +281,6 @@ export const translations: Record<Language, Translations> = {
     newGame: 'New Workout Session',
     quickRemoveHalf: 'Trim Half Board',
     onboardingWelcome: 'Daily Workout Setup',
-    onboardingIntro: 'Before spinning the wheel, let’s quickly calibrate today’s workout session!',
-    stepLabel: 'Step {current} of {total}',
-    nextStep: 'Next Step →',
-    prevStep: '← Back',
-    summaryTitle: 'Session Configuration',
-    readyToStart: 'Ready to sweat? Let’s spin the wheel!',
-    chooseAvatar: 'Select your Avatar',
     activeWorkoutMode: 'Active Mode',
     workoutObjective: 'Workout Objective',
     targetGoalProgress: 'Target Pushup Milestone',
@@ -390,20 +316,12 @@ export const translations: Record<Language, Translations> = {
     allEliminatedAlert: '所有數字均已被淘汰！自動重置輪盤號碼池。',
 
     // Side Bet Selector
-    sideBetTitle: '要下邊注嗎？',
     riskReward: '高風險高回報',
-    sideBetWin: '贏：0.5倍個數',
-    sideBetLose: '輸：1.5倍個數',
     betActive: '邊注生效中',
-    betNoneTitle: '不下注',
     betNoneSubtitle: '標準 1x',
-    betRedTitle: '紅色',
     betRedSubtitle: '紅槽數字',
-    betBlackTitle: '黑色',
     betBlackSubtitle: '黑槽數字',
-    betOddTitle: '單數',
     betOddSubtitle: '奇數數字',
-    betEvenTitle: '雙數',
     betEvenSubtitle: '偶數數字',
 
     // Betting Board
@@ -437,10 +355,6 @@ export const translations: Record<Language, Translations> = {
     greenZeroPocket: '綠色零號',
     redPocket: '紅槽',
     blackPocket: '黑槽',
-    sideBetWonHeader: '🎉 邊注贏了！',
-    sideBetLostHeader: '💥 邊注輸了！',
-    sideBetWonSub: '下注 {bet} 成功 — 目標俯臥撐減半！',
-    sideBetLostSub: '下注 {bet} 失敗 — 目標俯臥撐增加50%！',
     targetPushups: '目標俯臥撐',
     calculationBreakdown: '計算明細',
     zeroBonusTitle: '🎉 休息獎勵！',
@@ -503,27 +417,9 @@ export const translations: Record<Language, Translations> = {
     welcomeTitle: '俯臥撐輪盤',
     welcomeSubtitle: '今天有幾位玩家參與健身挑戰？',
     playerCountLabel: '玩家人數',
-    soloMode: '1位玩家 (單人挑戰)',
-    soloModeDesc: '為單人量身定制的平衡難度與目標模式',
-    duoMode: '2位玩家 (雙人對戰)',
-    duoModeDesc: '輪流轉動輪盤，一對一俯臥撐對決',
-    squadMode: '3位以上 (多人派對)',
-    squadModeDesc: '團隊協作，共同分擔輪盤總次數',
-    customPlayerCount: '自定義人數',
-    selectModeTitle: '選擇模式',
-    selectModeDesc: '選擇每次轉盤的強度，然後設定今天的總目標。',
-    modeNormalTitle: '普通',
-    modeNormalDesc: '做轉到數字的 100%。',
-    modeEasyTitle: '輕鬆',
-    modeEasyDesc: '做轉到數字的一半 (50%)。',
-    modeNormalBadge: '普通 (100%)',
-    modeEasyBadge: '輕鬆 (50%)',
-    summaryTarget: '本次目標',
     pushupsUnit: '個俯臥撐',
     perPlayer: '每人',
     targetGoalLabel: '今天的俯臥撐總數',
-    targetGoalHelp: '一直轉到達成總數為止，最後一次只需做剩下的次數。',
-    setupPlayersTitle: '玩家名單與個人設定',
     startGameBtn: '開始訓練 🚀',
     changeGameSetup: '模式設定',
     goalAchievedTitle: '🏆 目標達成！',
@@ -532,13 +428,6 @@ export const translations: Record<Language, Translations> = {
     newGame: '開始新回合',
     quickRemoveHalf: '精簡半數號碼',
     onboardingWelcome: '今日訓練配置',
-    onboardingIntro: '在轉動輪盤前，讓我們花幾秒鐘為您設定今日的健身挑戰！',
-    stepLabel: '步驟 {current} / {total}',
-    nextStep: '下一步 →',
-    prevStep: '← 上一步',
-    summaryTitle: '訓練配置概覽',
-    readyToStart: '準備好揮灑汗水了嗎？開始轉動輪盤！',
-    chooseAvatar: '選擇您的頭像',
     activeWorkoutMode: '當前模式',
     workoutObjective: '訓練目標與進度',
     targetGoalProgress: '目標俯臥撐進度',
@@ -574,20 +463,12 @@ export const translations: Record<Language, Translations> = {
     allEliminatedAlert: 'Tous les numéros ont été éliminés ! Réinitialisation automatique.',
 
     // Side Bet Selector
-    sideBetTitle: 'Placer un pari secondaire ?',
     riskReward: 'Risque & Récompense',
-    sideBetWin: 'Gagné : 0.5x Répétitions',
-    sideBetLose: 'Perdu : 1.5x Répétitions',
     betActive: 'PARI ACTIF',
-    betNoneTitle: 'Aucun Pari',
     betNoneSubtitle: 'Standard 1x',
-    betRedTitle: 'Rouge',
     betRedSubtitle: 'Cases Rouges',
-    betBlackTitle: 'Noir',
     betBlackSubtitle: 'Cases Noires',
-    betOddTitle: 'Impair',
     betOddSubtitle: 'Numéros Impairs',
-    betEvenTitle: 'Pair',
     betEvenSubtitle: 'Numéros Pairs',
 
     // Betting Board
@@ -621,10 +502,6 @@ export const translations: Record<Language, Translations> = {
     greenZeroPocket: 'Zéro Vert',
     redPocket: 'Case Rouge',
     blackPocket: 'Case Noire',
-    sideBetWonHeader: '🎉 PARI SECONDAIRE GAGNÉ !',
-    sideBetLostHeader: '💥 PARI SECONDAIRE PERDU !',
-    sideBetWonSub: 'Parié sur {bet} — Objectif réduit de moitié !',
-    sideBetLostSub: 'Parié sur {bet} — Objectif augmenté de 50% !',
     targetPushups: 'Objectif de Pompes',
     calculationBreakdown: 'Détail du Calcul',
     zeroBonusTitle: '🎉 Bonus de Repos !',
@@ -687,27 +564,9 @@ export const translations: Record<Language, Translations> = {
     welcomeTitle: 'Push-Up Roulette',
     welcomeSubtitle: 'Combien de joueurs participent à la séance aujourd\'hui ?',
     playerCountLabel: 'Nombre de Joueurs',
-    soloMode: '1 Joueur (Défi Solo)',
-    soloModeDesc: 'Entraînement calibré avec équilibrage et objectifs sur mesure',
-    duoMode: '2 Joueurs (Duel Face-à-Face)',
-    duoModeDesc: 'Chacun son tour à la roulette pour un affrontement intense',
-    squadMode: '3+ Joueurs (En Équipe / Fête)',
-    squadModeDesc: 'Séance de groupe pour partager les 666 pompes du tapis',
-    customPlayerCount: 'Nombre de Joueurs Personnalisé',
-    selectModeTitle: 'Choisir le mode',
-    selectModeDesc: 'Choisissez l\'intensité de chaque tirage, puis votre total du jour.',
-    modeNormalTitle: 'Normal',
-    modeNormalDesc: 'Faites 100% du numéro tiré.',
-    modeEasyTitle: 'Facile',
-    modeEasyDesc: 'Faites la moitié (50%) du numéro tiré.',
-    modeNormalBadge: 'Normal (100%)',
-    modeEasyBadge: 'Facile (50%)',
-    summaryTarget: 'Objectif de la séance',
     pushupsUnit: 'pompes',
     perPlayer: 'joueur',
     targetGoalLabel: 'Total de pompes aujourd\'hui',
-    targetGoalHelp: 'Tirez jusqu\'à atteindre ce total. Le dernier tirage ne demande que ce qui reste.',
-    setupPlayersTitle: 'Configuration des Joueurs',
     startGameBtn: 'Lancer l\'Entraînement 🚀',
     changeGameSetup: 'Mode / Joueurs',
     goalAchievedTitle: '🏆 Objectif Atteint !',
@@ -716,13 +575,6 @@ export const translations: Record<Language, Translations> = {
     newGame: 'Nouvelle Séance',
     quickRemoveHalf: 'Réduire de Moitié',
     onboardingWelcome: 'Configuration du Jour',
-    onboardingIntro: 'Avant de lancer la roulette, configurons votre entraînement du jour !',
-    stepLabel: 'Étape {current} sur {total}',
-    nextStep: 'Étape Suivante →',
-    prevStep: '← Précédent',
-    summaryTitle: 'Récapitulatif de la Séance',
-    readyToStart: 'Prêt à transpirer ? Faites tourner la roulette !',
-    chooseAvatar: 'Choisissez votre avatar',
     activeWorkoutMode: 'Mode Actif',
     workoutObjective: 'Objectif & Progression',
     targetGoalProgress: 'Objectif de Pompes',

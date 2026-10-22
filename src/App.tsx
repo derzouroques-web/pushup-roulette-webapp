@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Player, SpinResult, GameSettings, GameView, SideBetType } from './types';
+import type { Player, SpinResult, GameSettings, GameView } from './types';
 import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups, getAssignedPushups } from './utils/constants';
 import { audioEngine } from './utils/audio';
 import { RouletteCanvas } from './components/RouletteCanvas';
@@ -10,7 +10,6 @@ import { RestTimer } from './components/RestTimer';
 import { GameSettingsModal } from './components/GameSettingsModal';
 import { HistoryLog } from './components/HistoryLog';
 import { StatsDashboard } from './components/StatsDashboard';
-import { SideBetSelector } from './components/SideBetSelector';
 import { LanguageSelector } from './components/LanguageSelector';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { WelcomeSetupModal } from './components/WelcomeSetupModal';
@@ -40,7 +39,6 @@ const AppContent: React.FC = () => {
   const [eliminatedNumbers, setEliminatedNumbers] = useState<Set<number>>(new Set());
   const [history, setHistory] = useState<SpinResult[]>([]);
   const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
-  const [currentSideBet, setCurrentSideBet] = useState<SideBetType>('none');
 
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const [landedNumber, setLandedNumber] = useState<number | null>(null);
@@ -92,21 +90,7 @@ const AppContent: React.FC = () => {
 
     const pocketColor = landedNumber === 0 ? 'green' : RED_NUMBERS.has(landedNumber) ? 'red' : 'black';
 
-    // Evaluate side bet outcome for history record
-    let sideBetWon: boolean | undefined = undefined;
-    let sideBetMultiplier = 1.0;
-    if (currentSideBet !== 'none') {
-      if (currentSideBet === 'red') sideBetWon = pocketColor === 'red';
-      else if (currentSideBet === 'black') sideBetWon = pocketColor === 'black';
-      else if (currentSideBet === 'odd') sideBetWon = landedNumber !== 0 && (landedNumber % 2 !== 0);
-      else if (currentSideBet === 'even') sideBetWon = landedNumber !== 0 && (landedNumber % 2 === 0);
-      else if (currentSideBet === 'low') sideBetWon = landedNumber >= 1 && landedNumber <= 18;
-      else if (currentSideBet === 'high') sideBetWon = landedNumber >= 19 && landedNumber <= 36;
-
-      sideBetMultiplier = sideBetWon ? 0.5 : 1.5;
-    }
-
-    const targetPushups = getAssignedPushups(landedNumber, settings, activePlayer, sideBetMultiplier);
+    const targetPushups = getAssignedPushups(landedNumber, settings, activePlayer);
 
     const newRecord: SpinResult = {
       id: Date.now().toString(),
@@ -119,9 +103,6 @@ const AppContent: React.FC = () => {
       pushupsDone,
       status,
       wasEliminated: settings.eliminationMode,
-      sideBet: currentSideBet,
-      sideBetWon,
-      sideBetMultiplier,
     };
 
     setHistory(prev => [...prev, newRecord]);
@@ -331,13 +312,6 @@ const AppContent: React.FC = () => {
                 onStartSpin={handleStartSpin}
               />
 
-              {/* Side Bet Selector */}
-              <SideBetSelector
-                selectedBet={currentSideBet}
-                onSelectBet={setCurrentSideBet}
-                disabled={isSpinning}
-              />
-
               {/* Canvas Roulette Wheel Container */}
               <div className="bg-slate-900/80 rounded-3xl p-3 sm:p-4 border border-slate-800/80 shadow-xl flex items-center justify-center">
                 <RouletteCanvas
@@ -443,7 +417,6 @@ const AppContent: React.FC = () => {
           landedNumber={landedNumber}
           player={activePlayer}
           settings={settings}
-          sideBet={currentSideBet}
           onLogResult={handleLogResult}
           onStartRestTimer={() => {
             setShowSpinModal(false);

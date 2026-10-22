@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import type { Player, GameSettings, SideBetType } from '../types';
+import type { Player, GameSettings } from '../types';
 import { RED_NUMBERS, getWorkoutTargetPushups, getAssignedPushups } from '../utils/constants';
-import { Flame, CheckCircle, SkipForward, Timer, Gift, X, Trophy, AlertTriangle } from 'lucide-react';
+import { Flame, CheckCircle, SkipForward, Timer, Gift, X, Trophy } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface SpinModalProps {
   landedNumber: number;
   player: Player;
   settings: GameSettings;
-  sideBet?: SideBetType;
   onLogResult: (pushupsDone: number, status: 'completed' | 'partial' | 'passed') => void;
   onStartRestTimer: () => void;
   onClose: () => void;
@@ -19,7 +18,6 @@ export const SpinModal: React.FC<SpinModalProps> = ({
   landedNumber,
   player,
   settings,
-  sideBet = 'none',
   onLogResult,
   onStartRestTimer,
   onClose,
@@ -28,29 +26,7 @@ export const SpinModal: React.FC<SpinModalProps> = ({
   const isRed = RED_NUMBERS.has(landedNumber);
   const isZero = landedNumber === 0;
 
-  // Evaluate side bet outcome
-  let sideBetWon: boolean | undefined = undefined;
-  let sideBetMultiplier = 1.0;
-
-  if (sideBet && sideBet !== 'none') {
-    if (sideBet === 'red') {
-      sideBetWon = isRed;
-    } else if (sideBet === 'black') {
-      sideBetWon = !isRed && !isZero;
-    } else if (sideBet === 'odd') {
-      sideBetWon = !isZero && (landedNumber % 2 !== 0);
-    } else if (sideBet === 'even') {
-      sideBetWon = !isZero && (landedNumber % 2 === 0);
-    } else if (sideBet === 'low') {
-      sideBetWon = landedNumber >= 1 && landedNumber <= 18;
-    } else if (sideBet === 'high') {
-      sideBetWon = landedNumber >= 19 && landedNumber <= 36;
-    }
-
-    sideBetMultiplier = sideBetWon ? 0.5 : 1.5;
-  }
-
-  const targetPushups = getAssignedPushups(landedNumber, settings, player, sideBetMultiplier);
+  const targetPushups = getAssignedPushups(landedNumber, settings, player);
 
   const [customReps, setCustomReps] = useState<number>(targetPushups);
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -112,40 +88,6 @@ export const SpinModal: React.FC<SpinModalProps> = ({
             </span>
           </div>
         </div>
-
-        {/* Side Bet Outcome Alert Banner */}
-        {sideBet !== 'none' && sideBetWon !== undefined && (
-          <div
-            className={`w-full p-3 rounded-2xl border flex items-center justify-between text-left text-xs font-bold shadow-sm ${
-              sideBetWon
-                ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-200'
-                : 'bg-red-950/80 border-red-500/50 text-red-200'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              {sideBetWon ? (
-                <Trophy className="w-4 h-4 text-emerald-400 shrink-0" />
-              ) : (
-                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
-              )}
-              <div>
-                <span className="block font-black uppercase text-[11px]">
-                  {sideBetWon ? t('sideBetWonHeader') : t('sideBetLostHeader')}
-                </span>
-                <span className="text-[11px] font-normal opacity-90">
-                  {sideBetWon ? t('sideBetWonSub', { bet: sideBet }) : t('sideBetLostSub', { bet: sideBet })}
-                </span>
-              </div>
-            </div>
-            <span
-              className={`px-2 py-0.5 rounded-lg text-[10px] font-black shrink-0 ${
-                sideBetWon ? 'bg-emerald-500 text-slate-950' : 'bg-red-500 text-white'
-              }`}
-            >
-              {sideBetWon ? '0.5x' : '1.5x'}
-            </span>
-          </div>
-        )}
 
         {/* Pushups Challenge Banner */}
         {isZero ? (
