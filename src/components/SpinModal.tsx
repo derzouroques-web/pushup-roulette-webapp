@@ -9,6 +9,7 @@ interface SpinModalProps {
   landedNumber: number;
   player: Player;
   settings: GameSettings;
+  sessionPushups: number;
   onLogResult: (pushupsDone: number, status: 'completed' | 'partial' | 'passed') => void;
   onStartRestTimer: () => void;
   onClose: () => void;
@@ -18,6 +19,7 @@ export const SpinModal: React.FC<SpinModalProps> = ({
   landedNumber,
   player,
   settings,
+  sessionPushups,
   onLogResult,
   onStartRestTimer,
   onClose,
@@ -26,7 +28,7 @@ export const SpinModal: React.FC<SpinModalProps> = ({
   const isRed = RED_NUMBERS.has(landedNumber);
   const isZero = landedNumber === 0;
 
-  const targetPushups = getAssignedPushups(landedNumber, settings, player);
+  const targetPushups = getAssignedPushups(landedNumber, settings, sessionPushups);
 
   const [customReps, setCustomReps] = useState<number>(targetPushups);
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -109,7 +111,7 @@ export const SpinModal: React.FC<SpinModalProps> = ({
             {/* Workout Goal Pushup Progress Preview */}
             {(() => {
               const workoutGoal = getWorkoutTargetPushups(settings);
-              const nextTotal = player.totalPushups + targetPushups;
+              const nextTotal = sessionPushups + targetPushups;
               const nextPercent = Math.min(100, Math.round((nextTotal / workoutGoal) * 100));
 
               return (

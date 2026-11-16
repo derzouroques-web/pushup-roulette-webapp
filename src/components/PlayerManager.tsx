@@ -134,7 +134,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                     </div>
                     <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
                       <span className="font-extrabold text-amber-400">
-                        {player.totalPushups} {targetGoal && targetGoal > 0 ? `/ ${targetGoal}` : ''} reps
+                        {player.totalPushups} {players.length === 1 && targetGoal && targetGoal > 0 ? `/ ${targetGoal}` : ''} reps
                       </span>
                       <span>•</span>
                       <span>{player.totalSpins} spins</span>

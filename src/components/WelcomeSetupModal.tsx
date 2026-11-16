@@ -94,7 +94,7 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
           <div className="space-y-2.5">
             <label className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <Target className="w-3.5 h-3.5" /> {t('targetGoalLabel')}
-              {playerCount > 1 && <span className="text-slate-400 normal-case">({t('perPlayer')})</span>}
+              {playerCount > 1 && <span className="text-slate-400 normal-case">({t('together')})</span>}
             </label>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
               {[50, 100, 150, 200, 250, 300].map(goal => (
