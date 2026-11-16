@@ -63,13 +63,17 @@ export const getHalfBoardEliminatedSet = (mode: 'low' | 'random' | 'odd' | 'even
 
 export const getWorkoutTargetPushups = (settings: GameSettings): number => settings.targetRepsGoal;
 
+// All players share one counter toward the session target
+export const getSessionPushups = (players: Player[]): number =>
+  players.reduce((sum, p) => sum + p.totalPushups, 0);
+
 // Always 1x: the landed number is the number of pushups
-export const getAssignedPushups = (landedNumber: number, settings: GameSettings, player: Player): number => {
+export const getAssignedPushups = (landedNumber: number, settings: GameSettings, sessionPushups: number): number => {
   let reps = landedNumber;
   if (settings.maxRepCap > 0) {
     reps = Math.min(reps, settings.maxRepCap);
   }
   // Last spin of the session only asks for what's left to reach the target
-  const remaining = getWorkoutTargetPushups(settings) - player.totalPushups;
+  const remaining = getWorkoutTargetPushups(settings) - sessionPushups;
   return remaining > 0 ? Math.min(reps, remaining) : reps;
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Player, SpinResult, GameSettings, GameView } from './types';
-import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups, getAssignedPushups } from './utils/constants';
+import { DEFAULT_SETTINGS, RED_NUMBERS, getHalfBoardEliminatedSet, getWorkoutTargetPushups, getAssignedPushups, getSessionPushups } from './utils/constants';
 import { audioEngine } from './utils/audio';
 import { RouletteCanvas } from './components/RouletteCanvas';
 import { BettingBoard } from './components/BettingBoard';
@@ -57,6 +57,7 @@ const AppContent: React.FC = () => {
   }, [settings.soundEnabled]);
 
   const activePlayer = players.find(p => p.id === activePlayerId) || players[0];
+  const sessionPushups = getSessionPushups(players);
 
   // Initiate Wheel Spin
   const handleStartSpin = () => {
@@ -90,7 +91,7 @@ const AppContent: React.FC = () => {
 
     const pocketColor = landedNumber === 0 ? 'green' : RED_NUMBERS.has(landedNumber) ? 'red' : 'black';
 
-    const targetPushups = getAssignedPushups(landedNumber, settings, activePlayer);
+    const targetPushups = getAssignedPushups(landedNumber, settings, sessionPushups);
 
     const newRecord: SpinResult = {
       id: Date.now().toString(),
@@ -128,9 +129,9 @@ const AppContent: React.FC = () => {
 
     setShowSpinModal(false);
 
-    // Celebrate the moment the player crosses the session target
+    // Celebrate the moment the shared counter crosses the session target
     const workoutTarget = getWorkoutTargetPushups(settings);
-    if (activePlayer.totalPushups < workoutTarget && newTotalPushups >= workoutTarget) {
+    if (sessionPushups < workoutTarget && sessionPushups + pushupsDone >= workoutTarget) {
       setCelebrationMessage(t('goalAchievedDesc').replace('{target}', workoutTarget.toString()));
       setShowCelebrationModal(true);
     }
@@ -417,6 +418,7 @@ const AppContent: React.FC = () => {
           landedNumber={landedNumber}
           player={activePlayer}
           settings={settings}
+          sessionPushups={sessionPushups}
           onLogResult={handleLogResult}
           onStartRestTimer={() => {
             setShowSpinModal(false);

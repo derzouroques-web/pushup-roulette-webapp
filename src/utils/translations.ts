@@ -123,7 +123,7 @@ export interface Translations {
   welcomeSubtitle: string;
   playerCountLabel: string;
   pushupsUnit: string;
-  perPlayer: string;
+  together: string;
   targetGoalLabel: string;
   startGameBtn: string;
   changeGameSetup: string;
@@ -271,7 +271,7 @@ export const translations: Record<Language, Translations> = {
     welcomeSubtitle: 'How many players are joining the workout today?',
     playerCountLabel: 'Number of Players',
     pushupsUnit: 'pushups',
-    perPlayer: 'player',
+    together: 'together',
     targetGoalLabel: 'Total pushups today',
     startGameBtn: 'Start Workout 🚀',
     changeGameSetup: 'Setup / Mode',
@@ -418,7 +418,7 @@ export const translations: Record<Language, Translations> = {
     welcomeSubtitle: '今天有幾位玩家參與健身挑戰？',
     playerCountLabel: '玩家人數',
     pushupsUnit: '個俯臥撐',
-    perPlayer: '每人',
+    together: '合計',
     targetGoalLabel: '今天的俯臥撐總數',
     startGameBtn: '開始訓練 🚀',
     changeGameSetup: '模式設定',
@@ -565,7 +565,7 @@ export const translations: Record<Language, Translations> = {
     welcomeSubtitle: 'Combien de joueurs participent à la séance aujourd\'hui ?',
     playerCountLabel: 'Nombre de Joueurs',
     pushupsUnit: 'pompes',
-    perPlayer: 'joueur',
+    together: 'ensemble',
     targetGoalLabel: 'Total de pompes aujourd\'hui',
     startGameBtn: 'Lancer l\'Entraînement 🚀',
     changeGameSetup: 'Mode / Joueurs',

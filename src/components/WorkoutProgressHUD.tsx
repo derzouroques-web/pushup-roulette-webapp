@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Player, GameSettings } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import { getWorkoutTargetPushups } from '../utils/constants';
+import { getWorkoutTargetPushups, getSessionPushups } from '../utils/constants';
 import { Target, Users, RotateCcw, Flame } from 'lucide-react';
 
 interface WorkoutProgressHUDProps {
@@ -27,7 +27,7 @@ export const WorkoutProgressHUD: React.FC<WorkoutProgressHUDProps> = ({
 
   const isSolo = players.length === 1;
   const targetPushups = getWorkoutTargetPushups(settings);
-  const currentPushups = player.totalPushups;
+  const currentPushups = getSessionPushups(players);
   const progressPercent = Math.min(100, Math.round((currentPushups / targetPushups) * 100));
   const repsLeft = Math.max(0, targetPushups - currentPushups);
 
