@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import confetti from 'canvas-confetti';
 import { RANDOM_THEME_ID, THEMES, type Theme, type Word } from './words';
 
-type Phase = 'setup' | 'pass' | 'reveal' | 'play' | 'result';
+type Phase = 'setup' | 'pass' | 'reveal' | 'play' | 'result' | 'champion';
 
 interface Round {
   theme: Theme;
@@ -12,6 +13,7 @@ interface Round {
 
 const MIN_PLAYERS = 3;
 const MAX_PLAYERS = 12;
+const WIN_TARGET = 5;
 const STORAGE_KEY = 'imposter-settings-v1';
 const USED_KEY = 'imposter-used-words-v1';
 
@@ -20,6 +22,8 @@ interface Settings {
   themeId: string;
   imposterCount: number;
   hint: boolean;
+  /** Points per player, aligned with `players`. First to WIN_TARGET wins the match. */
+  scores: number[];
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -27,6 +31,7 @@ const DEFAULT_SETTINGS: Settings = {
   themeId: RANDOM_THEME_ID,
   imposterCount: 1,
   hint: true,
+  scores: [0, 0, 0, 0],
 };
 
 function loadSettings(): Settings {
@@ -47,6 +52,10 @@ function loadSettings(): Settings {
           : DEFAULT_SETTINGS.themeId,
       imposterCount: parsed.imposterCount === 2 ? 2 : 1,
       hint: typeof parsed.hint === 'boolean' ? parsed.hint : true,
+      scores: players.map((_, i) => {
+        const v = Array.isArray(parsed.scores) ? Number(parsed.scores[i]) : 0;
+        return Number.isFinite(v) && v > 0 ? Math.min(Math.floor(v), WIN_TARGET) : 0;
+      }),
     };
   } catch {
     return DEFAULT_SETTINGS;
@@ -123,6 +132,9 @@ export default function App() {
   const [round, setRound] = useState<Round | null>(null);
   const [current, setCurrent] = useState(0);
   const [roundNumber, setRoundNumber] = useState(0);
+  // Players given a point in the current round (so a second tap can undo it).
+  const [awarded, setAwarded] = useState<number[]>([]);
+  const [champion, setChampion] = useState<number | null>(null);
 
   useEffect(() => saveSettings(settings), [settings]);
 
@@ -146,11 +158,35 @@ export default function App() {
   );
 
   const startRound = () => {
+    // A finished match (someone already at the target) starts over from 0.
+    if (settings.scores.some((v) => v >= WIN_TARGET)) {
+      setSettings((s) => ({ ...s, scores: s.players.map(() => 0) }));
+    }
     setRound(buildRound(settings));
+    setAwarded([]);
+    setChampion(null);
     setCurrent(0);
     setRoundNumber((r) => r + 1);
     setPhase('pass');
   };
+
+  const toggleWin = (i: number) => {
+    const has = awarded.includes(i);
+    const scores = settings.scores.map((v, j) =>
+      j === i ? Math.max(0, Math.min(WIN_TARGET, v + (has ? -1 : 1))) : v,
+    );
+    setSettings((s) => ({ ...s, scores }));
+    setAwarded((a) => (has ? a.filter((x) => x !== i) : [...a, i]));
+    if (!has && scores[i] >= WIN_TARGET) {
+      setChampion(i);
+      setPhase('champion');
+      vibrate([100, 60, 100, 60, 250]);
+    } else {
+      vibrate(has ? 15 : 35);
+    }
+  };
+
+  const resetScores = () => setSettings((s) => ({ ...s, scores: s.players.map(() => 0) }));
 
   const nextPlayer = () => {
     if (current + 1 >= names.length) {
@@ -164,7 +200,12 @@ export default function App() {
   return (
     <div className="app-shell">
       {phase === 'setup' && (
-        <SetupScreen settings={settings} setSettings={setSettings} onStart={startRound} />
+        <SetupScreen
+          settings={settings}
+          setSettings={setSettings}
+          onStart={startRound}
+          onResetScores={resetScores}
+        />
       )}
       {phase === 'pass' && round && (
         <PassScreen
@@ -190,6 +231,7 @@ export default function App() {
         <PlayScreen
           round={round}
           names={names}
+          scores={settings.scores}
           onReveal={() => {
             vibrate([60, 40, 120]);
             setPhase('result');
@@ -200,8 +242,26 @@ export default function App() {
         <ResultScreen
           round={round}
           names={names}
+          scores={settings.scores}
+          awarded={awarded}
+          onToggleWin={toggleWin}
           onAgain={startRound}
           onSetup={() => setPhase('setup')}
+        />
+      )}
+      {phase === 'champion' && champion !== null && (
+        <ChampionScreen
+          winner={champion}
+          names={names}
+          scores={settings.scores}
+          onNewMatch={() => {
+            resetScores();
+            startRound();
+          }}
+          onUndo={() => {
+            toggleWin(champion);
+            setPhase('result');
+          }}
         />
       )}
     </div>
@@ -214,13 +274,16 @@ function SetupScreen({
   settings,
   setSettings,
   onStart,
+  onResetScores,
 }: {
   settings: Settings;
   setSettings: Dispatch<SetStateAction<Settings>>;
   onStart: () => void;
+  onResetScores: () => void;
 }) {
   const [showRules, setShowRules] = useState(false);
-  const { players, themeId, imposterCount, hint } = settings;
+  const { players, themeId, imposterCount, hint, scores } = settings;
+  const hasScores = scores.some((v) => v > 0);
   const canTwoImposters = players.length >= 5;
 
   const update = (patch: Partial<Settings>) => setSettings((s) => ({ ...s, ...patch }));
@@ -230,7 +293,7 @@ function SetupScreen({
 
   const addPlayer = () => {
     if (players.length >= MAX_PLAYERS) return;
-    update({ players: [...players, `Player ${players.length + 1}`] });
+    update({ players: [...players, `Player ${players.length + 1}`], scores: [...scores, 0] });
   };
 
   const removePlayer = (i: number) => {
@@ -238,6 +301,7 @@ function SetupScreen({
     const next = players.filter((_, j) => j !== i);
     update({
       players: next,
+      scores: scores.filter((_, j) => j !== i),
       imposterCount: next.length < 5 ? 1 : imposterCount,
     });
   };
@@ -282,6 +346,14 @@ function SetupScreen({
                 onFocus={(e) => e.currentTarget.select()}
                 onChange={(e) => setPlayer(i, e.target.value)}
               />
+              {scores[i] > 0 && (
+                <span
+                  className="shrink-0 rounded-full bg-amber-400/15 px-2.5 py-1 text-sm font-bold text-amber-300"
+                  aria-label={`${scores[i]} points`}
+                >
+                  🏆 {scores[i]}
+                </span>
+              )}
               <button
                 type="button"
                 className="icon-btn"
@@ -299,6 +371,20 @@ function SetupScreen({
             + Add player
           </button>
         )}
+        <div className="mt-3 flex items-center justify-between gap-3 text-sm text-white/50">
+          <span>🏆 First to {WIN_TARGET} points wins the match</span>
+          {hasScores && (
+            <button
+              type="button"
+              className="shrink-0 font-semibold text-white/70 underline underline-offset-4"
+              onClick={() => {
+                if (window.confirm('Reset all scores to 0?')) onResetScores();
+              }}
+            >
+              Reset scores
+            </button>
+          )}
+        </div>
       </section>
 
       <section className="panel">
@@ -374,6 +460,7 @@ function SetupScreen({
             <li>Take turns saying ONE word linked to the secret word. Don't make it too easy!</li>
             <li>After 1–2 rounds of clues, discuss and vote for who you think is the imposter.</li>
             <li>Reveal! If you caught the imposter, they get one last chance to guess the word.</li>
+            <li>Tap the winners to give them a point. First to {WIN_TARGET} points wins the match! 🏆</li>
           </ol>
         )}
       </section>
@@ -597,10 +684,12 @@ function RevealScreen({
 function PlayScreen({
   round,
   names,
+  scores,
   onReveal,
 }: {
   round: Round;
   names: string[];
+  scores: number[];
   onReveal: () => void;
 }) {
   const [confirming, setConfirming] = useState(false);
@@ -630,6 +719,9 @@ function PlayScreen({
               <span className="w-6 text-center font-bold text-white/50">{i + 1}</span>
               <span className="flex-1 truncate text-lg font-semibold">{names[p]}</span>
               {i === 0 && <span className="text-sm font-bold text-amber-300">Starts ⭐</span>}
+              <span className="w-10 text-right text-sm font-bold text-white/45" aria-label={`${scores[p]} points`}>
+                🏆{scores[p]}
+              </span>
             </li>
           ))}
         </ol>
@@ -666,17 +758,23 @@ function PlayScreen({
 function ResultScreen({
   round,
   names,
+  scores,
+  awarded,
+  onToggleWin,
   onAgain,
   onSetup,
 }: {
   round: Round;
   names: string[];
+  scores: number[];
+  awarded: number[];
+  onToggleWin: (i: number) => void;
   onAgain: () => void;
   onSetup: () => void;
 }) {
   const many = round.imposters.length > 1;
   return (
-    <main className="screen gap-6 pb-40">
+    <main className="screen gap-6 pb-44">
       <header className="pt-6 text-center">
         <p className="text-sm font-bold tracking-[0.25em] text-white/50 uppercase">
           The {many ? 'imposters were' : 'imposter was'}
@@ -704,6 +802,42 @@ function ResultScreen({
         </p>
       </section>
 
+      <section className="panel">
+        <h2 className="section-title">Who won this round?</h2>
+        <p className="mt-1 mb-3 text-sm text-white/55">
+          Tap a name to give +1 point. Tap again to undo. First to {WIN_TARGET} wins!
+        </p>
+        <ul className="flex flex-col gap-2">
+          {names.map((name, i) => {
+            const on = awarded.includes(i);
+            const isImp = round.imposters.includes(i);
+            return (
+              <li key={i}>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => onToggleWin(i)}
+                  className={`win-row ${on ? 'awarded' : ''}`}
+                >
+                  <span className="flex min-w-0 flex-1 flex-col items-start gap-1.5">
+                    <span className="flex w-full min-w-0 items-center gap-2">
+                      <span className="truncate text-lg font-bold">{name}</span>
+                      {isImp && (
+                        <span className="shrink-0 rounded-full bg-rose-500/20 px-2 py-0.5 text-xs font-bold text-rose-300">
+                          🕵️ Imposter
+                        </span>
+                      )}
+                    </span>
+                    <ScoreDots score={scores[i]} />
+                  </span>
+                  <span className={`win-badge ${on ? 'on' : ''}`}>{on ? '+1 ✓' : '+1'}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
       <section className="panel text-[15px] leading-snug text-white/75">
         <p>
           ✅ Caught the imposter? They get <b>one guess</b> at the word. Right guess = imposter
@@ -714,10 +848,118 @@ function ResultScreen({
 
       <div className="bottom-bar flex flex-col gap-2">
         <button type="button" className="btn-primary w-full" onClick={onAgain}>
-          Play again
+          Next round
         </button>
         <button type="button" className="btn-ghost w-full" onClick={onSetup}>
           Change players or theme
+        </button>
+      </div>
+    </main>
+  );
+}
+
+function ScoreDots({ score }: { score: number }) {
+  return (
+    <span className="flex items-center gap-1" aria-label={`${score} of ${WIN_TARGET} points`}>
+      {Array.from({ length: WIN_TARGET }).map((_, i) => (
+        <span
+          key={i}
+          className={`h-2.5 w-2.5 rounded-full transition-colors ${
+            i < score ? 'bg-amber-400' : 'bg-white/15'
+          }`}
+        />
+      ))}
+      <span className="ml-1.5 text-xs font-bold text-white/50">
+        {score}/{WIN_TARGET}
+      </span>
+    </span>
+  );
+}
+
+/* -------------------------------- Champion -------------------------------- */
+
+function ChampionScreen({
+  winner,
+  names,
+  scores,
+  onNewMatch,
+  onUndo,
+}: {
+  winner: number;
+  names: string[];
+  scores: number[];
+  onNewMatch: () => void;
+  onUndo: () => void;
+}) {
+  useEffect(() => {
+    const colors = ['#fbbf24', '#f472b6', '#a78bfa', '#34d399', '#ffffff'];
+    const fire = (originX: number, angle: number) =>
+      confetti({
+        particleCount: 70,
+        angle,
+        spread: 70,
+        startVelocity: 55,
+        origin: { x: originX, y: 0.75 },
+        colors,
+        disableForReducedMotion: true,
+      });
+    fire(0, 60);
+    fire(1, 120);
+    const t = window.setTimeout(() => {
+      fire(0.2, 75);
+      fire(0.8, 105);
+    }, 450);
+    return () => {
+      window.clearTimeout(t);
+      confetti.reset();
+    };
+  }, []);
+
+  const standings = names
+    .map((name, i) => ({ name, i, score: scores[i] }))
+    .sort((a, b) => b.score - a.score);
+
+  return (
+    <main className="screen gap-6 pb-44">
+      <header className="pt-8 text-center">
+        <div className="trophy" aria-hidden>
+          🏆
+        </div>
+        <p className="mt-4 text-sm font-bold tracking-[0.25em] text-amber-300/80 uppercase">
+          Match winner
+        </p>
+        <h1 className="pop-in mt-1 text-5xl font-black tracking-tight break-all text-amber-300">
+          {names[winner]}
+        </h1>
+        <p className="mt-2 text-white/60">First to {WIN_TARGET} points. Bow down! 👑</p>
+      </header>
+
+      <section className="panel">
+        <h2 className="section-title mb-3">Final standings</h2>
+        <ol className="flex flex-col gap-2">
+          {standings.map((p, rank) => (
+            <li
+              key={p.i}
+              className={`flex items-center gap-3 rounded-2xl px-4 py-3 ${
+                p.i === winner ? 'bg-amber-400/15 ring-1 ring-amber-300/50' : 'bg-white/5'
+              }`}
+            >
+              <span className="w-7 text-center text-lg" aria-hidden>
+                {rank === 0 ? '🥇' : rank === 1 ? '🥈' : rank === 2 ? '🥉' : `${rank + 1}`}
+              </span>
+              <span className="flex-1 truncate text-lg font-semibold">{p.name}</span>
+              <span className="font-black text-white/80">{p.score}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <div className="bottom-bar flex flex-col gap-2">
+        <button type="button" className="btn-primary w-full" onClick={onNewMatch}>
+          New match
+        </button>
+        <button type="button" className="btn-ghost w-full" onClick={onUndo}>
+          Oops, undo that point
         </button>
       </div>
     </main>

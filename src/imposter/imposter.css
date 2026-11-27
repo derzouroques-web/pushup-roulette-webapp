@@ -302,3 +302,50 @@ button:disabled {
     transition: none !important;
   }
 }
+
+/* Round winners picker */
+.win-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 4rem;
+  padding: 0.7rem 0.8rem 0.7rem 1rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, transform 0.08s;
+}
+.win-row:active {
+  transform: scale(0.98);
+}
+.win-row.awarded {
+  background: rgba(251, 191, 36, 0.14);
+  border-color: var(--accent);
+}
+.win-badge {
+  flex-shrink: 0;
+  min-width: 3.6rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 800;
+  text-align: center;
+}
+.win-badge.on {
+  background: var(--accent);
+  color: #1c1300;
+}
+
+.trophy {
+  font-size: 6.5rem;
+  line-height: 1;
+  animation: trophy-bounce 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 12px 30px rgba(251, 191, 36, 0.55));
+}
+@keyframes trophy-bounce {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
