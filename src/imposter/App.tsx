@@ -244,7 +244,13 @@ function SetupScreen({
 
   return (
     <main className="screen gap-6 pb-32">
-      <header className="pt-4 text-center">
+      <a
+        href="/"
+        className="-mb-4 inline-flex h-10 items-center gap-1 self-start rounded-full bg-white/10 px-4 text-sm font-semibold text-white/70 active:bg-white/20"
+      >
+        ← All games
+      </a>
+      <header className="text-center">
         <div className="text-6xl" aria-hidden>
           🕵️
         </div>

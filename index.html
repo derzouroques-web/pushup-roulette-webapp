@@ -1,17 +1,114 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎰</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Casino Push-up Roulette | Fit Party Challenge</title>
-    <meta name="description" content="A casino European roulette wheel game (0-36) where players spin to determine their push-up workout set! Featuring multi-player leaderboards, sound FX, and elimination mode." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d0a1c" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Party Games" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>" />
+    <title>Party Games | Push-up Roulette &amp; Imposter</title>
+    <meta name="description" content="Two party games in one place: Push-up Roulette and Imposter, the pass-the-phone word game." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; overscroll-behavior: none; }
+      body {
+        min-height: 100dvh;
+        background:
+          radial-gradient(90% 50% at 0% 0%, rgba(217, 119, 6, 0.22), transparent 70%),
+          radial-gradient(90% 50% at 100% 100%, rgba(139, 92, 246, 0.28), transparent 70%),
+          #0d0a1c;
+        background-attachment: fixed;
+        color: #fff;
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
+      }
+      main {
+        max-width: 30rem;
+        margin: 0 auto;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: calc(env(safe-area-inset-top) + 28px) 18px calc(env(safe-area-inset-bottom) + 24px);
+      }
+      header { text-align: center; margin-bottom: 0.75rem; }
+      header .logo { font-size: 3.5rem; line-height: 1; }
+      h1 { margin: 0.5rem 0 0; font-size: 2.4rem; font-weight: 900; letter-spacing: -0.03em; }
+      header p { margin: 0.35rem 0 0; color: rgba(255, 255, 255, 0.6); font-size: 1rem; }
+      .game {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        padding: 1.4rem 1.4rem 1.25rem;
+        border-radius: 1.75rem;
+        text-decoration: none;
+        color: #fff;
+        overflow: hidden;
+        transition: transform 0.1s ease;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .game:active { transform: scale(0.97); }
+      .game .emoji { font-size: 3rem; line-height: 1; margin-bottom: 0.4rem; }
+      .game h2 { margin: 0; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.02em; }
+      .game p { margin: 0; font-size: 0.98rem; line-height: 1.4; color: rgba(255, 255, 255, 0.85); }
+      .game .meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+      .game .meta span {
+        font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.65rem; border-radius: 999px;
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .game .go {
+        position: absolute; top: 1.25rem; right: 1.25rem;
+        width: 2.6rem; height: 2.6rem; border-radius: 999px;
+        display: flex; align-items: center; justify-content: center;
+        background: rgba(255, 255, 255, 0.92); color: #111; font-size: 1.3rem; font-weight: 900;
+      }
+      .pushup {
+        background: linear-gradient(150deg, #d97706, #92400e 70%, #451a03);
+        box-shadow: 0 20px 45px -20px rgba(217, 119, 6, 0.9);
+      }
+      .imposter {
+        background: linear-gradient(150deg, #7c3aed, #4c1d95 65%, #881337);
+        box-shadow: 0 20px 45px -20px rgba(124, 58, 237, 0.9);
+      }
+      footer { margin-top: auto; padding-top: 1rem; text-align: center; color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; }
+      @media (prefers-reduced-motion: reduce) { .game { transition: none; } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <main>
+      <header>
+        <div class="logo" aria-hidden="true">🎲</div>
+        <h1>Party Games</h1>
+        <p>Pick a game and grab your friends</p>
+      </header>
+
+      <a class="game pushup" href="/pushup/">
+        <span class="go" aria-hidden="true">→</span>
+        <span class="emoji" aria-hidden="true">🎰</span>
+        <h2>Push-up Roulette</h2>
+        <p>Spin the casino wheel. The number decides how many push-ups you do.</p>
+        <div class="meta"><span>💪 Fitness</span><span>👥 1+ players</span></div>
+      </a>
+
+      <a class="game imposter" href="/imposter/">
+        <span class="go" aria-hidden="true">→</span>
+        <span class="emoji" aria-hidden="true">🕵️</span>
+        <h2>Imposter</h2>
+        <p>Everyone gets the secret word, except one. Pass the phone and find the liar.</p>
+        <div class="meta"><span>📱 One phone</span><span>👥 3–12 players</span></div>
+      </a>
+
+      <footer>Best played on your phone 📱</footer>
+    </main>
   </body>
 </html>
