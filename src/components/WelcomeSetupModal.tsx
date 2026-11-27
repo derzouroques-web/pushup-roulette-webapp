@@ -56,6 +56,16 @@ export const WelcomeSetupModal: React.FC<WelcomeSetupModalProps> = ({
             </h2>
           </div>
 
+          {(isInitialLaunch || !onClose) && (
+            <a
+              href="/"
+              className="shrink-0 px-3 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white text-xs font-bold transition-colors"
+              aria-label="Back to all games"
+            >
+              ← Games
+            </a>
+          )}
+
           {!isInitialLaunch && onClose && (
             <button
               onClick={onClose}

@@ -38,10 +38,10 @@ export const LanguageSelector: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-sm hover:shadow"
+        className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-500/50 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-sm hover:shadow"
         title={t('languageSelect')}
       >
-        <Globe className="w-3.5 h-3.5 text-amber-400" />
+        <Globe className="hidden sm:block w-3.5 h-3.5 text-amber-400" />
         <span className="text-base leading-none">{currentLang.flag}</span>
         <span className="hidden sm:inline-block font-semibold">{currentLang.label}</span>
       </button>

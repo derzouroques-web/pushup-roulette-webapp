@@ -15,7 +15,7 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { WelcomeSetupModal } from './components/WelcomeSetupModal';
 import { WorkoutProgressHUD } from './components/WorkoutProgressHUD';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import { History, BarChart3, Settings, Volume2, VolumeX, Timer, Users, Sparkles } from 'lucide-react';
+import { History, BarChart3, Settings, Volume2, VolumeX, Timer, Users, Sparkles, ChevronLeft } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   const { t } = useLanguage();
@@ -211,12 +211,20 @@ const AppContent: React.FC = () => {
       <header className="sticky top-0 z-30 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 px-4 py-2.5 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-400 flex items-center justify-center text-lg shadow-md border border-yellow-200/50">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <a
+              href="/"
+              className="flex shrink-0 items-center justify-center w-8 h-8 -ml-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-amber-500/50 transition-colors"
+              title="All games"
+              aria-label="Back to all games"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </a>
+            <div className="hidden sm:flex shrink-0 w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-400 flex items-center justify-center text-lg shadow-md border border-yellow-200/50">
               🎰
             </div>
-            <div>
-              <h1 className="text-base font-black tracking-tight text-white flex items-center gap-1">
+            <div className="min-w-0">
+              <h1 className="text-[13px] sm:text-base font-black tracking-tight text-white flex items-center gap-1 min-w-0 whitespace-nowrap">
                 <span className="text-gold-gradient">{t('appTitle1')}</span>
                 <span className="text-white">{t('appTitle2')}</span>
               </h1>
@@ -258,7 +266,7 @@ const AppContent: React.FC = () => {
           </nav>
 
           {/* Top Quick Actions */}
-          <div className="flex items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1.5">
             {/* Quick Game Mode / Setup Button */}
             <button
               onClick={() => setShowSetupModal(true)}
