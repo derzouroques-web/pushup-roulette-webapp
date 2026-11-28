@@ -2,6 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/pushup", "destination": "/pushup/index.html" },
-    { "source": "/imposter", "destination": "/imposter/index.html" }
+    { "source": "/imposter", "destination": "/imposter/index.html" },
+    { "source": "/hotpotato", "destination": "/hotpotato/index.html" },
+    { "source": "/duel", "destination": "/duel/index.html" }
   ]
 }

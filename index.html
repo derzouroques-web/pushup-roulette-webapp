@@ -9,8 +9,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Party Games" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>" />
-    <title>Party Games | Push-up Roulette &amp; Imposter</title>
-    <meta name="description" content="Two party games in one place: Push-up Roulette and Imposter, the pass-the-phone word game." />
+    <title>Party Games | Push-up Roulette, Imposter, Hot Potato &amp; Reaction Duel</title>
+    <meta name="description" content="Party games for one phone: Push-up Roulette, Imposter, Hot Potato and Reaction Duel. Loser does push-ups." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
@@ -80,6 +80,14 @@
         background: linear-gradient(150deg, #7c3aed, #4c1d95 65%, #881337);
         box-shadow: 0 20px 45px -20px rgba(124, 58, 237, 0.9);
       }
+      .hotpotato {
+        background: linear-gradient(150deg, #ea580c, #b91c1c 65%, #450a0a);
+        box-shadow: 0 20px 45px -20px rgba(234, 88, 12, 0.9);
+      }
+      .duel {
+        background: linear-gradient(150deg, #059669, #0f766e 60%, #164e63);
+        box-shadow: 0 20px 45px -20px rgba(16, 185, 129, 0.9);
+      }
       footer { margin-top: auto; padding-top: 1rem; text-align: center; color: rgba(255, 255, 255, 0.35); font-size: 0.85rem; }
       @media (prefers-reduced-motion: reduce) { .game { transition: none; } }
     </style>
@@ -106,6 +114,22 @@
         <h2>Imposter</h2>
         <p>Everyone gets the secret word, except one. Pass the phone and find the liar.</p>
         <div class="meta"><span>📱 One phone</span><span>👥 3–12 players</span></div>
+      </a>
+
+      <a class="game hotpotato" href="/hotpotato/">
+        <span class="go" aria-hidden="true">→</span>
+        <span class="emoji" aria-hidden="true">💣</span>
+        <h2>Hot Potato</h2>
+        <p>Name something in the category, tap and pass. Holding the phone when it blows? Push-ups.</p>
+        <div class="meta"><span>📱 One phone</span><span>👥 2–16 players</span></div>
+      </a>
+
+      <a class="game duel" href="/duel/">
+        <span class="go" aria-hidden="true">→</span>
+        <span class="emoji" aria-hidden="true">⚡</span>
+        <h2>Reaction Duel</h2>
+        <p>Phone on the table, one half each. Tap the moment it turns green. Too early and you lose.</p>
+        <div class="meta"><span>⚡ Reflexes</span><span>👥 2 players</span></div>
       </a>
 
       <footer>Best played on your phone 📱</footer>

@@ -1,0 +1,112 @@
+@import "tailwindcss";
+@import "../shared/party.css";
+
+:root {
+  --bg: #06140f;
+  --accent: #fbbf24;
+  --glow-1: rgba(16, 185, 129, 0.26);
+  --glow-2: rgba(6, 182, 212, 0.18);
+}
+
+/* Full-screen split: top half faces the player sitting opposite. */
+.duel {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  background: #000;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.half {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.25rem calc(env(safe-area-inset-bottom) + 1rem);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.12s;
+}
+.half.flipped {
+  transform: rotate(180deg);
+  /* After rotating, the notch side is at the "bottom" of this half */
+  padding-bottom: calc(env(safe-area-inset-top) + 1rem);
+}
+.half-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.half-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.4rem;
+}
+.half-big {
+  font-size: clamp(2.6rem, 13vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.half-small {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+/* No transition into green: it must appear instantly. */
+.half.idle { background: #1f2937; }
+.half.wait { background: #450a0a; }
+.half.decoy-amber { background: #d97706; transition: none; }
+.half.decoy-blue { background: #2563eb; transition: none; }
+.half.decoy-purple { background: #7c3aed; transition: none; }
+.half.go { background: #16a34a; transition: none; }
+.half.win { background: #059669; }
+.half.lose { background: #27272a; color: rgba(255, 255, 255, 0.7); }
+.half.foul { background: #b91c1c; }
+
+.duel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: #0a0a0a;
+  border-block: 1px solid rgba(255, 255, 255, 0.12);
+}
+.duel-btn {
+  min-width: 3.25rem;
+  height: 3.25rem;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+.duel-btn.go {
+  min-width: 6.5rem;
+  background: var(--accent);
+  color: #1c1300;
+}
+.duel-btn.go:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.4);
+}
+.duel-btn.danger {
+  background: #e11d48;
+}
+.duel-btn.ghost {
+  color: rgba(255, 255, 255, 0.6);
+}
+.duel-btn.spacer {
+  visibility: hidden;
+}

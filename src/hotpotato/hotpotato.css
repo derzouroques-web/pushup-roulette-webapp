@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import "../shared/party.css";
+
+:root {
+  --bg: #1a0b08;
+  --accent: #fbbf24;
+  --glow-1: rgba(234, 88, 12, 0.32);
+  --glow-2: rgba(220, 38, 38, 0.22);
+}
+
+.theme-tile.selected {
+  background: rgba(249, 115, 22, 0.16);
+  border-color: #fb923c;
+}
+
+.prompt-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 1.75rem;
+  background: linear-gradient(160deg, #ea580c, #9a3412 70%, #7f1d1d);
+  box-shadow: 0 20px 45px -20px rgba(234, 88, 12, 0.9);
+  width: 100%;
+}
+
+.btn-fire {
+  min-height: 4rem;
+  border-radius: 1.25rem;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #f97316, #dc2626);
+  box-shadow: 0 12px 35px -10px rgba(249, 115, 22, 0.8);
+  transition: transform 0.08s ease;
+}
+.btn-fire:active {
+  transform: scale(0.97);
+}
+
+/* The big tap target while the fuse burns */
+.bomb-pad {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 18rem;
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  color: #fff;
+  -webkit-touch-callout: none;
+}
+.bomb-pad:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+.bomb {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7.5rem;
+  line-height: 1;
+  animation: bomb-wobble 0.9s ease-in-out infinite;
+}
+.bomb.bump {
+  animation: bomb-bump 0.3s ease-out, bomb-wobble 0.9s ease-in-out 0.3s infinite;
+}
+.bomb-ring {
+  position: absolute;
+  inset: 10%;
+  border-radius: 9999px;
+  border: 3px solid rgba(251, 146, 60, 0.8);
+  animation: ring-out 0.5s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes bomb-wobble {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+@keyframes bomb-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.82) rotate(-10deg); }
+  100% { transform: scale(1); }
+}
+@keyframes ring-out {
+  from { opacity: 0.9; transform: scale(0.8); }
+  to { opacity: 0; transform: scale(1.6); }
+}
+
+/* Explosion */
+.boom-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 30%, #fff7ed, #f97316 40%, #dc2626 70%, transparent);
+  animation: flash 0.9s ease-out forwards;
+}
+@keyframes flash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.boom-emoji {
+  font-size: 7rem;
+  line-height: 1;
+  animation: boom-shake 0.5s ease-in-out 2;
+}
+@keyframes boom-shake {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(-8px, 4px) scale(1.15); }
+  40% { transform: translate(8px, -4px) scale(1.1); }
+  60% { transform: translate(-6px, -2px) scale(1.05); }
+  80% { transform: translate(6px, 2px); }
+}
+
+.chip {
+  min-height: 2.9rem;
+  padding: 0 1.1rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 2px solid transparent;
+  font-size: 1.05rem;
+  font-weight: 700;
+  transition: background 0.15s, border-color 0.15s;
+}
+.chip.on {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: #fb923c;
+}
+.chip:disabled {
+  opacity: 0.4;
+}
