@@ -13,6 +13,8 @@ export default defineConfig({
         menu: resolve(import.meta.dirname, 'index.html'),
         pushup: resolve(import.meta.dirname, 'pushup/index.html'),
         imposter: resolve(import.meta.dirname, 'imposter/index.html'),
+        hotpotato: resolve(import.meta.dirname, 'hotpotato/index.html'),
+        duel: resolve(import.meta.dirname, 'duel/index.html'),
       },
     },
   },
